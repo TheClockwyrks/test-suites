@@ -1,9 +1,11 @@
-Draw the **Gloamfin**, a 16-frame **sprite sheet** of a deep-sea enemy, using
+Draw the **Gloamfin**, an 8-frame **sprite sheet** of a deep-sea enemy, using
 only the drawing tool.
 
 The Gloamfin is **the Listener**: a **non-playable pursuer** in a deep-sea
 maze-chase game — an eyeless predator that hunts the player by sound. You are
-drawing the *enemy*, never the player.
+drawing the *enemy* swimming in four directions, never the player. The sonar
+pulse it emits is a separate, much larger effect asset and is **not** part of
+this sheet — here you draw only the creature, with a faint sonar cue at its head.
 
 ## How drawing works
 
@@ -47,7 +49,7 @@ the exact operation contract.
 ## What to deliver
 
 Build the Gloamfin sprite sheet up operation by operation until each
-`frames/<index>.png` matches the brief: an eyeless violet
-predator drawn in each of its 32×32 frames — swimming down, up, left, and right
-(two frames each), and the sonar-pulse animation. When you are satisfied, stop:
-the recorded per-frame action logs are your finished submission.
+`frames/<index>.png` matches the brief: an eyeless violet predator drawn in each
+of its 32×32 frames — swimming down, up, left, and right (two frames each). When
+you are satisfied, stop: the recorded per-frame action logs are your finished
+submission.
