@@ -1,13 +1,13 @@
-# Galaga — `v1.0.0` (Spectra)
+# Spectra — `v1.0.0`
 
-This is version `v1.0.0` of the **Galaga** test case. The implemented game is an
+This is version `v1.0.0` of the **Spectra** test case. The implemented game is an
 original formation shooter titled **Spectra**: a resonator-fighter against a
 swarm of crystalline drones that fly in, assemble into a hovering formation, and
 dive-bomb you — where your cannon is tuned to one of two **spectral bands** and
 that band is also your shield, so every moment is a gamble over which band to be.
 
-`galaga` is the catalog slug for this lineage of formation-shooter cases;
-`Spectra` is the original in-game title. The case is inspired by classic
+`spectra` is the catalog slug for this lineage of formation-shooter cases, and
+the game's in-fiction title. The case is inspired by classic
 formation-shooter arcade games but is not a clone of any of them — the name, look,
 two-band polarity combat, drones, and the Prism's spectral inversion are original
 to The Test Cabinet. Notably, it **drops** the genre's two most recognizable
@@ -62,5 +62,5 @@ UI from the specs and the screenshots rather than copying the mockup code.
 ## Versioning
 
 This case follows semantic versioning per version folder
-(`test-cases/galaga/v1.0.0/`). Each version is self-contained and immutable once
+(`test-cases/spectra/v1.0.0/`). Each version is self-contained and immutable once
 a run references it; design revisions land as new version folders.

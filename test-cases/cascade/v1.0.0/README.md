@@ -1,13 +1,13 @@
-# Klondike — `v1.0.0` (Cascade)
+# Cascade — `v1.0.0`
 
-This is version `v1.0.0` of the **Klondike** test case. The implemented game is
+This is version `v1.0.0` of the **Cascade** test case. The implemented game is
 an original Klondike solitaire titled **Cascade**: the classic patience — seven
 tableau columns, four foundations built Ace-to-King by suit, a stock and waste —
 finished with a physics-driven **victory cascade** where the foundation cards
 bounce off the table and paint the screen.
 
-`klondike` is the catalog slug for this lineage (Klondike is a public-domain set
-of solitaire rules); `Cascade` is the original in-game title. The case is
+`cascade` is the catalog slug for this lineage, and the game's in-fiction title
+(Klondike is the public-domain set of solitaire rules it implements). The case is
 inspired by classic solitaire but is not a clone of any existing product — the
 name, table, card design, palette, and win animation are original to The Test
 Cabinet. The rules of Klondike are specified exactly; no existing product's
@@ -56,5 +56,5 @@ UI from the specs and the screenshots rather than copying the mockup code.
 ## Versioning
 
 This case follows semantic versioning per version folder
-(`test-cases/klondike/v1.0.0/`). Each version is self-contained and immutable once
+(`test-cases/cascade/v1.0.0/`). Each version is self-contained and immutable once
 a run references it; design revisions land as new version folders.

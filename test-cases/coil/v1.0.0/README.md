@@ -1,14 +1,14 @@
-# Snake — `v1.0.0` (Coil)
+# Coil — `v1.0.0`
 
-This is version `v1.0.0` of the **Snake** test case. The implemented game is an
+This is version `v1.0.0` of the **Coil** test case. The implemented game is an
 original grid-and-growth game titled **Coil**: classic grid-locked snake
 mechanics plus a **combo** multiplier (pellets eaten in quick succession score
 more) and three extra modes — **Wrap** (the board edges wrap into tunnels),
 **Maze** (fixed fatal interior obstacles), and **Feast** (a periodic,
 time-limited bonus orb).
 
-Snake is the catalog slug for this lineage of grid-and-growth cases; `Coil` is
-the original in-game title. The case is inspired by classic snake games but is
+`coil` is the catalog slug for this lineage of grid-and-growth cases, and the
+game's in-fiction title. The case is inspired by classic snake games but is
 not a clone of any of them — the name, look, and combo mechanic are original to
 The Test Cabinet.
 
@@ -55,5 +55,5 @@ rather than copying the mockup code.
 ## Versioning
 
 This case follows semantic versioning per version folder
-(`test-cases/snake/v1.0.0/`). Each version is self-contained and immutable once
+(`test-cases/coil/v1.0.0/`). Each version is self-contained and immutable once
 a run references it; design revisions land as new version folders.

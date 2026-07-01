@@ -1,13 +1,13 @@
-# Desktop TD — `v1.0.0` (Meltdown)
+# Meltdown — `v1.0.0`
 
-This is version `v1.0.0` of the **Desktop TD** test case. The implemented game
+This is version `v1.0.0` of the **Meltdown** test case. The implemented game
 is an original open-field tower-defense game titled **Meltdown**: you build a
 maze out of your own emitter towers to wind the surge the long way around, where
 every emitter fires harder the hotter it runs but trips offline at the redline,
 so holding the floor is about pacing heat as much as shaping the maze.
 
-`desktop-td` is the catalog slug for this lineage of open-field/"maze"
-tower-defense cases; `Meltdown` is the original in-game title. The case is
+`meltdown` is the catalog slug for this lineage of open-field/"maze"
+tower-defense cases, and the game's in-fiction title. The case is
 inspired by classic open-field tower-defense games but is not a clone of any of
 them — the name, look, the heat-as-power emitters and redline trip, the
 Forge/Vent thermal coupling, the heat-averse cryo Rime, and the surge are
@@ -64,5 +64,5 @@ copying the mockup code.
 ## Versioning
 
 This case follows semantic versioning per version folder
-(`test-cases/desktop-td/v1.0.0/`). Each version is self-contained and immutable
+(`test-cases/meltdown/v1.0.0/`). Each version is self-contained and immutable
 once a run references it; design revisions land as new version folders.

@@ -1,14 +1,14 @@
-# Pac-Man — `v1.0.0` (Fathom)
+# Fathom — `v1.0.0`
 
-This is version `v1.0.0` of the **Pac-Man** test case. The implemented game is an
+This is version `v1.0.0` of the **Fathom** test case. The implemented game is an
 original maze chase titled **Fathom**: a bioluminescent forager grazing plankton
 through a pitch-dark trench, where the maze is hidden by fog of war until your
 light or a **sonar** pulse reveals it, and three predators each hunt by a
 different signal — your **light** (the Lure), your **sound** (the Listener), or
 its own **flare** (the Flarefish).
 
-`pacman` is the catalog slug for this lineage of maze-chase cases; `Fathom` is the
-original in-game title. The case is inspired by classic maze-chase arcade games
+`fathom` is the catalog slug for this lineage of maze-chase cases, and the game's
+in-fiction title. The case is inspired by classic maze-chase arcade games
 but is not a clone of any of them — the name, look, fog-of-war sensing, sonar, and
 predators are original to The Test Cabinet. Notably, it **replaces** the genre's
 two most recognizable beats: there are no fixed power pellets and no eating the
@@ -69,5 +69,5 @@ UI from the specs and the screenshots rather than copying the mockup code.
 ## Versioning
 
 This case follows semantic versioning per version folder
-(`test-cases/pacman/v1.0.0/`). Each version is self-contained and immutable once
+(`test-cases/fathom/v1.0.0/`). Each version is self-contained and immutable once
 a run references it; design revisions land as new version folders.
