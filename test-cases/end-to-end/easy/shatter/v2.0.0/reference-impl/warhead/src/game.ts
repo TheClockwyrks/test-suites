@@ -12,7 +12,7 @@ import {
   EXTRA_LIFE_STEP,
   FIELD_H,
   FIELD_W,
-  FIRE_INTERVAL,
+  FIRE_INTERVAL_TICKS,
   HIT_FLASH_TIME,
   INVULN_TIME,
   MAX_BULLETS,
@@ -43,7 +43,7 @@ import {
   STAR_X,
   STAR_Y,
   START_LIVES,
-  TRAIL_TIME,
+  TRAIL_TICKS,
   TORPEDO_CONE,
   TORPEDO_LIFE,
   TORPEDO_R,
@@ -97,13 +97,13 @@ import type {
 } from "./types";
 
 // Append a position to a bullet's motion-trail history, capping it to a fixed
-// slice of recent travel time (TRAIL_TIME). dt is the fixed sim step, so the cap
-// is a constant sample count; because the window is a slice of *time*, the
-// trail's on-screen length scales with the bullet's current speed.
-function recordTrail(trail: Vec[], x: number, y: number, dt: number): void {
+// slice of recent travel (TRAIL_TICKS). This runs once per fixed step, so the
+// window is a whole number of ticks and the cap is that many samples plus the
+// current one; because the window is a slice of *time*, the trail's on-screen
+// length scales with the bullet's current speed.
+function recordTrail(trail: Vec[], x: number, y: number): void {
   trail.push({ x, y });
-  const max = Math.max(2, Math.round(TRAIL_TIME / dt) + 1);
-  while (trail.length > max) trail.shift();
+  while (trail.length > TRAIL_TICKS + 1) trail.shift();
 }
 
 export const TITLE_ITEMS = ["PLAY", "HOW TO PLAY"];
@@ -201,7 +201,7 @@ export class Game {
     this.rocks = [];
     this.enemyBullets = [];
     this.saucer = null;
-    // The torpedo begins a new game charged and ready (specs/mode-warhead.md).
+    // The torpedo begins a new game charged and ready (specs/gameplay.md).
     this.torpedo = null;
     this.torpedoCharged = true;
     this.torpedoTimer = 0;
@@ -326,7 +326,7 @@ export class Game {
 
   private stepPlaying(dt: number): void {
     this.updateShip(dt);
-    this.updateFire(dt);
+    this.updateFire();
     this.updateTorpedoCharge(dt);
     this.updateBullets(dt);
     this.updateRocks(dt);
@@ -402,8 +402,12 @@ export class Game {
     }
   }
 
-  private updateFire(dt: number): void {
-    this.fireCooldown = Math.max(0, this.fireCooldown - dt);
+  // The cooldown is counted in whole ticks, not seconds: the gate is 22 ticks
+  // (specs/ship.md) and this runs once per fixed step, so decrementing by one
+  // lands on the boundary exactly rather than drifting into it through the
+  // accumulated error of repeated `- dt`.
+  private updateFire(): void {
+    this.fireCooldown = Math.max(0, this.fireCooldown - 1);
     // Continuous fire while the key is held (rate-limited).
     if (KEY.fire(this.input)) this.tryFire();
 
@@ -429,7 +433,7 @@ export class Game {
       life: BULLET_LIFE,
       trail: [{ x: nose.x, y: nose.y }],
     });
-    this.fireCooldown = FIRE_INTERVAL;
+    this.fireCooldown = FIRE_INTERVAL_TICKS;
     this.audio.fire();
   }
 
@@ -519,7 +523,7 @@ export class Game {
       b.x += b.vx * dt;
       b.y += b.vy * dt;
       wrapBody(b);
-      recordTrail(b.trail, b.x, b.y, dt);
+      recordTrail(b.trail, b.x, b.y);
       b.life -= dt;
       if (b.life > 0) keep.push(b);
     }
@@ -666,7 +670,7 @@ export class Game {
 
     // Rocks pulled into the core are recycled to the edge (no score). The
     // recycle carries the rock's remaining health across — a damaged rock
-    // re-enters just as damaged (specs/mode-warhead.md) — while resetting its
+    // re-enters just as damaged (specs/gameplay.md) — while resetting its
     // move speed to a fresh base drift so it doesn't keep accelerating.
     for (let i = 0; i < this.rocks.length; i++) {
       const r = this.rocks[i];
@@ -831,7 +835,7 @@ export class Game {
     this.ship.reset();
     this.invuln = INVULN_TIME;
     // A respawn refills the torpedo: the fresh ship comes back charged and ready,
-    // cancelling any recharge in progress (specs/mode-warhead.md).
+    // cancelling any recharge in progress (specs/gameplay.md).
     this.torpedoCharged = true;
     this.torpedoTimer = 0;
   }
