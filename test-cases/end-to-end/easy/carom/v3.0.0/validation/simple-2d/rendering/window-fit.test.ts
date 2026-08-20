@@ -1,13 +1,13 @@
 // Carom — rendering/window-fit: the whole 1280x720 field stays visible, fitted,
 // and centred whatever shape the window is.
 //
-// Fitting the field is the engine's, and that is exactly why this is worth
+// Fitting the field is the runtime's, and that is exactly why this is worth
 // checking: a build passes it by drawing in logical coordinates and never reading
 // the canvas element's size (specs/overview.md). A build that fitted the field
 // itself, or that drew in device pixels, moves what lands on the canvas away from
 // what the viewport says should be there — which is what the second check reads.
 //
-// So the first check reads the map the engine derived over several differently
+// So the first check reads the map the runtime derived over several differently
 // shaped surfaces — wider than the field, taller than it, portrait, and at raised
 // and fractional device pixel ratios — before a single frame has run, because the
 // requirement includes the state on load, before any input. The second poses a
@@ -141,7 +141,7 @@ it("draws the field inside the fit, leaving the letterbox bars bare", async () =
 
   // The bars either side carry nothing the game drew. They are outside the
   // logical space, so they are sampled in device pixels directly, and what is
-  // there is the engine's own clear.
+  // there is the runtime's own clear.
   for (const deviceX of [40, 1560]) {
     const bar = h.ctx.getImageData(deviceX, 360, 1, 1).data;
     const barColor = { r: bar[0], g: bar[1], b: bar[2] };

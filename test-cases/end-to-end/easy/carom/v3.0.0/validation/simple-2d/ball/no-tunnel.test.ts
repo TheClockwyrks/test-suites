@@ -6,14 +6,14 @@
 // the ceiling checks exactly what the integrator is required to survive, rather
 // than an impossible value no build is obliged to handle.
 //
-// WHY EACH PROBE RUNS TWICE. Under this engine the SIZE of a frame is not the
-// build's to choose: the engine hands the game whatever elapsed time the last
+// WHY EACH PROBE RUNS TWICE. Under this runtime the SIZE of a frame is not the
+// build's to choose: the runtime hands the game whatever elapsed time the last
 // frame really took, and a game that resolves collisions once per frame is safe
 // only while that time stays small. At the fine cadence the rest of this suite
 // uses, a ball at the ceiling speed moves eight pixels a frame — less than the
 // width of every object on the field, so nothing tunnels whatever the build does
 // and the check would be vacuous. The coarse step below is an ordinary bad
-// moment on a real machine (twenty frames a second, well inside the engine's own
+// moment on a real machine (twenty frames a second, well inside the runtime's own
 // delta clamp), and there the ball crosses far more than an obstacle's width in
 // one frame. A build that sub-steps its integration is unaffected; a build that
 // integrates once per frame puts the ball out the far side.
