@@ -114,12 +114,13 @@ const APART = 50;
 function playing(): Game {
   const game = new Game(new SilentBus());
   game.startRound();
+  // A chain with a straight run, a bend and a tail, clear of every mode's course.
   game.sim.setSnake([
+    { col: 12, row: 8 },
+    { col: 11, row: 8 },
     { col: 10, row: 8 },
-    { col: 9, row: 8 },
-    { col: 8, row: 8 },
-    { col: 8, row: 9 },
-    { col: 8, row: 10 },
+    { col: 10, row: 9 },
+    { col: 10, row: 10 },
   ]);
   game.sim.dir = "right";
   game.sim.setPellet(20, 4);
@@ -136,8 +137,8 @@ describe("the board", () => {
 
   it("tells the head apart from the field and from the body", () => {
     const frame = draw(playing());
-    const head = pixelAt(frame, { col: 10, row: 8 });
-    const body = pixelAt(frame, { col: 9, row: 8 });
+    const head = pixelAt(frame, { col: 12, row: 8 });
+    const body = pixelAt(frame, { col: 11, row: 8 });
     const empty = pixelAt(frame, { col: 25, row: 12 });
     expect(distance(head, empty)).toBeGreaterThan(APART);
     expect(distance(head, body)).toBeGreaterThan(APART);
@@ -150,10 +151,10 @@ describe("the board", () => {
       distance(pellet, pixelAt(frame, { col: 25, row: 12 })),
     ).toBeGreaterThan(APART);
     expect(
-      distance(pellet, pixelAt(frame, { col: 10, row: 8 })),
+      distance(pellet, pixelAt(frame, { col: 12, row: 8 })),
     ).toBeGreaterThan(APART);
     expect(
-      distance(pellet, pixelAt(frame, { col: 9, row: 8 })),
+      distance(pellet, pixelAt(frame, { col: 11, row: 8 })),
     ).toBeGreaterThan(APART);
   });
 
@@ -169,10 +170,10 @@ describe("the board", () => {
       distance(obstacle, pixelAt(frame, { col: 0, row: 0 })),
     ).toBeGreaterThan(APART);
     expect(
-      distance(obstacle, pixelAt(frame, { col: 10, row: 8 })),
+      distance(obstacle, pixelAt(frame, { col: 12, row: 8 })),
     ).toBeGreaterThan(APART);
     expect(
-      distance(obstacle, pixelAt(frame, { col: 9, row: 8 })),
+      distance(obstacle, pixelAt(frame, { col: 11, row: 8 })),
     ).toBeGreaterThan(APART);
   });
 });
@@ -186,10 +187,10 @@ describe("the snake's sprites", () => {
           Math.abs(image.x - (cellX(cell.col) + CELL / 2)) < 1 &&
           Math.abs(image.y - (cellY(cell.row) + CELL / 2)) < 1,
       )?.source;
-    expect(at({ col: 10, row: 8 })).toBe(assets.snake.head[0]);
-    expect(at({ col: 9, row: 8 })).toBe(assets.snake.body);
-    expect(at({ col: 8, row: 8 })).toBe(assets.snake.corner);
-    expect(at({ col: 8, row: 10 })).toBe(assets.snake.tail);
+    expect(at({ col: 12, row: 8 })).toBe(assets.snake.head[0]);
+    expect(at({ col: 11, row: 8 })).toBe(assets.snake.body);
+    expect(at({ col: 10, row: 8 })).toBe(assets.snake.corner);
+    expect(at({ col: 10, row: 10 })).toBe(assets.snake.tail);
   });
 
   it("paints every sprite with smoothing off", () => {
@@ -203,7 +204,7 @@ describe("the snake's sprites", () => {
     const frame = draw(game, 2);
     const head = frame.images.find(
       (image) =>
-        Math.abs(image.x - (cellX(10) + CELL / 2)) < 1 &&
+        Math.abs(image.x - (cellX(12) + CELL / 2)) < 1 &&
         Math.abs(image.y - (cellY(8) + CELL / 2)) < 1,
     );
     expect(head?.source).toBe(assets.snake.head[2]);

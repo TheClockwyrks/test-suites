@@ -192,8 +192,8 @@ describe("posing the board", () => {
   });
 
   it("places and removes the pellet outright", () => {
-    debug.setPellet(12, 4);
-    expect(debug.snapshot().pellet).toEqual({ col: 12, row: 4 });
+    debug.setPellet(25, 15);
+    expect(debug.snapshot().pellet).toEqual({ col: 25, row: 15 });
     debug.clearPellet();
     expect(debug.snapshot().pellet).toBeNull();
   });

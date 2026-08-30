@@ -38,7 +38,7 @@ import {
 import { roundRect, text } from "./draw";
 import type { Game } from "./game";
 import { menuItems } from "./menus";
-import { MODE_LABEL } from "./mode";
+import { HAS_OBSTACLES, MODE_LABEL } from "./mode";
 import type { Sim } from "./sim";
 import { COLORS, FONT } from "./theme";
 
@@ -498,13 +498,21 @@ function drawTitleCoil(ctx: CanvasRenderingContext2D, assets: Assets): void {
   ctx.restore();
 }
 
+/** What the fatal cells are depends on whether the mode lays a course of them. */
+const FATAL_LINES: readonly [string, string][] = HAS_OBSTACLES
+  ? [
+      ["AVOID", "The wall border, the bars across the board,"],
+      ["", "and your own body are all fatal to the head."],
+    ]
+  : [["AVOID", "The wall border and your own body are fatal."]];
+
 const HOWTO_LINES: readonly [string, string][] = [
   ["MOVE", "The snake never stops. Steering turns it on"],
   ["", "the next step, and it can only turn across"],
   ["", "its heading, so it never doubles back."],
   ["GROW", "Eat a pellet and the snake grows one cell."],
   ["", "The longer it is, the less room you have."],
-  ["AVOID", "The wall border and your own body are fatal."],
+  ...FATAL_LINES,
   ["COMBO", "Eat pellets in quick succession to build the"],
   ["", "multiplier, up to x5. Dawdle and the window"],
   ["", "runs out and the multiplier falls back to 1."],
@@ -529,7 +537,7 @@ function drawHowto(ctx: CanvasRenderingContext2D, game: Game): void {
     spacing: 4,
   });
 
-  let y = 234;
+  let y = 226;
   for (const [tag, body] of HOWTO_LINES) {
     if (tag) {
       text(ctx, tag, 250, y, {
@@ -540,7 +548,7 @@ function drawHowto(ctx: CanvasRenderingContext2D, game: Game): void {
       });
     }
     text(ctx, body, 360, y, { size: 20, color: COLORS.textDim, spacing: 1 });
-    y += 32;
+    y += 30;
   }
 
   drawMenu(ctx, menuItems("howto"), game.menuIndex, STAGE_CX, 660, 40, 24);
