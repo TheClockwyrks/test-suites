@@ -214,17 +214,18 @@ export function textIn(calls: readonly DrawCall[], region: Region): string {
   return textLines(calls, region).join("\n");
 }
 
+/**
+ * One reading of a piece of text: its letters and its digits, and nothing else.
+ *
+ * Case, spacing, and punctuation all come off, on both sides of a comparison,
+ * because a build is free to letter-space a label, to wrap a long line, and to
+ * set `Arc-Node` as `ARC NODE`. What the specification fixes is the words.
+ */
 function normalize(text: string): string {
-  return text.toUpperCase().replace(/\s+/g, "");
+  return text.toUpperCase().replace(/[^A-Z0-9]+/g, "");
 }
 
-/**
- * A region's text carries `needle`, ignoring case and every space.
- *
- * Spaces are ignored on both sides because a build is free to letter-space a
- * label and free to wrap a long line, and `specs/hud.md` fixes the words rather
- * than their setting.
- */
+/** A region's text carries `needle`, read that way. */
 export function drew(
   calls: readonly DrawCall[],
   region: Region,
