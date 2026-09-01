@@ -34,6 +34,15 @@
 // all thirteen readings; the same is true of a flight holding no cards and a set
 // memory holding no sets. Each is therefore read going in as well as coming out.
 //
+//
+// AND THE RUN IN HAND GOES WITH THE CARDS, which the second reading below takes
+// on a scenario of its own. specs/instrumentation.md: `clearTable` "clears the
+// run in hand and the drop target with them, because a held run holds cards the
+// clear has taken off the table". It is the operation that makes an isolated
+// world possible — a held run is on no pile, so emptying the thirteen piles
+// would otherwise leave a card in the hand that the board does not account for,
+// and the surface carries no other way to put one down but a real release.
+//
 // WHAT IT DOES NOT DECIDE. That ONE pile can be emptied on its own is
 // `instrumentation/clear-pile`.
 
@@ -43,6 +52,8 @@ import {
   assertEqual,
   assertGreaterThan,
   assertLength,
+  assertNotNull,
+  assertNull,
 } from "../assert";
 import {
   ACE,
@@ -62,15 +73,20 @@ import {
   TWO,
   captureStill,
   card,
+  cardTopLeft,
   createHarness,
   framesFor,
+  grabPoint,
+  movePointerTo,
   openTable,
   pileOf,
+  pileTopLeft,
   poseColumn,
   poseFlyer,
   poseFoundation,
   poseStock,
   poseWaste,
+  pressAt,
   type Harness,
   type PileKind,
 } from "../harness";
@@ -233,5 +249,69 @@ it("empties all thirteen piles and the set memory, and leaves the flyers and the
     POSED_GATES,
     "the four gates after clearTable, which leaves every gate alone " +
       "(specs/instrumentation.md)",
+  );
+});
+
+/**
+ * The two columns the run is carried between for the second reading.
+ *
+ * A red five onto a black six, which specs/tableau.md has a column accept, so the
+ * carry resolves a drop target as well as filling the hand.
+ */
+const HAND_FROM = 0;
+const HAND_TO = 1;
+const HAND_RUN = card("hearts", FIVE);
+const HAND_TARGET = card("spades", SIX);
+
+it("clears the run in hand and the drop target with the cards", async () => {
+  openTable(h);
+  poseColumn(h, HAND_FROM, [HAND_RUN]);
+  poseColumn(h, HAND_TO, [HAND_TARGET]);
+
+  // The press lifts the column's card, which enters the hand on the press itself
+  // (specs/controls.md), and the move lands its leading card on the other
+  // column's anchor, so its centre lies in that column's drop rectangle
+  // (specs/table.md) and a target is resolved.
+  const posed = h.snapshot();
+  const press = grabPoint(posed, HAND_FROM, 0);
+  const lead = cardTopLeft(posed, "tableau", HAND_FROM, 0);
+  const anchor = pileTopLeft("tableau", HAND_TO);
+  pressAt(h, press.x, press.y);
+  movePointerTo(
+    h,
+    press.x + (anchor.x - lead.x),
+    press.y + (anchor.y - lead.y),
+  );
+
+  const held = h.snapshot();
+  assertNotNull(
+    held.drag,
+    "the run in hand before the clear, which the press put there " +
+      "(specs/controls.md): an empty hand would say nothing about clearing it",
+  );
+  assertNotNull(
+    held.dropTarget,
+    `the drop target with the red five over column ${String(HAND_TO)}, whose ` +
+      "black six accepts it (specs/controls.md, specs/tableau.md): an " +
+      "unresolved target would say nothing about clearing one",
+  );
+
+  h.debug.clearTable();
+  const after = h.snapshot();
+
+  await h.advance(1);
+  // Before the assertions, so a clear that left a card in hand still leaves the
+  // picture of the board it drew.
+  captureStill(h, "cleared");
+
+  assertNull(
+    after.drag,
+    "the run in hand after clearTable(): the clear takes it with the cards it " +
+      "took off the table (specs/instrumentation.md)",
+  );
+  assertNull(
+    after.dropTarget,
+    "the drop target after clearTable(): it goes with the run the clear took " +
+      "out of the hand (specs/instrumentation.md)",
   );
 });
