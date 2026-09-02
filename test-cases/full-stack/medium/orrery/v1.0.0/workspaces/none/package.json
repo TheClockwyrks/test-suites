@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Orrery — a machine-building puzzle of arms, sigils, and celestial motes on a hex field, running entirely in the browser, on no engine.",
+  "description": "Orrery — a machine-building puzzle of arms, sigils, and celestial motes on a hex field, running entirely in the browser, on no engine, whose art, effects, and audio the build produces itself.",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc --noEmit && vite build",

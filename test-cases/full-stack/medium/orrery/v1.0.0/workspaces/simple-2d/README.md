@@ -6,7 +6,8 @@ how the rest of the specification is organized.
 
 The project is already wired up. It builds on the **Simple 2D** engine, which
 is installed as an ordinary dependency and documents itself under `engine/` —
-read that alongside the specs. What is missing is the game.
+read that alongside the specs. What is missing is the game, and the art and
+sound it plays.
 
 ## What you own
 
@@ -25,13 +26,9 @@ state as a read-only view (`DeepReadonly<OrreryState>`, from `ts-essentials`)
 and returns the next state, advanced against the frame's delta time in seconds;
 and `render` is handed that next state, read-only again, and draws it. The
 engine holds the state by value and replaces it with whatever `update` returns,
-so a frame builds the next state from the current one — spreading the parts
-that change — rather than writing into it, and the type is what guarantees that
-rendering changes nothing. All three currently throw `"not implemented"`.
-Implement them, and split the work across new modules under `src/` however you
-like — the field geometry, the placement rules, the simulation, the editor, the
-campaign data and its reference solutions, rendering, the debug surface, and so
-on.
+so a frame builds the next state from the current one rather than writing into
+it, and the type is what guarantees that rendering changes nothing. All three
+currently throw `"not implemented"`. Implement them.
 
 **The pointer comes from the engine.** The machine is built with the pointer,
 and the engine hands the game its position already in logical stage units along
@@ -45,7 +42,7 @@ is driven from code, so it is present and exactly as
 `specs/instrumentation.md` specifies. Because nothing holds a writable state,
 its operations are written in the shape of `update`: a pose takes the current
 state and returns the next, and a caller applies it through
-`engine.apply((s) => debug.loadPuzzle(s, challenge))`; a reading takes the
+`engine.apply((s) => debug.loadChallenge(s, challenge))`; a reading takes the
 state and returns what it read, as `debug.snapshot(engine.state)`. Nothing is
 published to the page.
 
@@ -58,11 +55,13 @@ authoritative state, and the surface's `reset()` restores exactly those.
 tools are on your `PATH` while you build here. `specs/assets.md` is the
 contract: what to produce, which tool produces it, the path it lands at, and the
 bar it is held to. The finished files are committed to this repository and
-loaded at runtime, and `npm run build` never invokes the tools.
+loaded through the engine's asset loader at runtime, and `npm run build` never
+invokes the tools.
 
 `@test-cabinet/particle-runtime` is already a dependency, vendored into this
-repository and resolved by a `file:` entry in `package.json`. It plays a produced
-`system.json` into a 2D drawing context. Import it like any other dependency.
+repository and resolved by a `file:` entry in `package.json`. It plays a
+produced `system.json` into a 2D drawing context — the one `render` receives.
+Import it like any other dependency.
 
 Tests you write belong beside your sources as `src/**/*.test.ts`. `npm test`
 runs them in process, with coverage over `src/`. The engine's documentation
@@ -75,12 +74,13 @@ carries a complete worked example of testing a game this way.
 - **`src/constants.ts`** — every figure the specification fixes: the stage,
   field, and editor geometry, the mote and part rosters, the costs, the
   instruction set, the speeds, the action names and bindings, the cue names,
-  and the screen copy. Read from it, and never restate a number it already
-  names.
+  the produced-asset paths, and the screen copy. Read from it.
 - **`index.html`** — the page and the canvas the engine fits the stage into.
 - **The toolchain** — `package.json`, `tsconfig.json`, `vite.config.ts`,
-  `vitest.config.ts`, `eslint.config.js`, `.prettierrc.json`, `.gitignore`.
+  `vitest.config.ts`, `eslint.config.js`, `.prettierrc.json`, `.prettierignore`,
+  and `.gitignore`.
 - **`.tcab/`** — the vendored engine and runtime libraries.
+- **`engine/`** — the engine's own documentation.
 
 Add dependencies to `package.json` if you genuinely need them, and commit the
 `package-lock.json` — the build is installed with `npm ci`. Leave the existing
@@ -99,9 +99,11 @@ entries alone.
 ## Before you finish
 
 - `npm run build` produces `dist/` with `index.html` at its root, and that
-  directory runs as-is on any static host.
+  directory runs as-is on any static host, at its root and under a sub-path.
 - `npm run typecheck`, `npm run lint`, `npm run format`, and `npm test` all
   pass. The same four commands are run over the repository you leave behind.
+- The assets `specs/assets.md` asks for are produced and committed under
+  `assets/`, and the game loads them.
 - **Replace this file** with the `README.md` `specs/overview.md` asks the
   finished build to ship: what the game is, how to install it, how to run it in
   development, how to produce the production build, and the controls.

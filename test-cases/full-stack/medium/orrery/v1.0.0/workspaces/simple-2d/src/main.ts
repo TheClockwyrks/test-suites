@@ -6,8 +6,9 @@
 // stage into the canvas (the uniform scale, the centered letterbox, the device
 // pixel ratio, and the resync when any of them changes), the keyboard, the
 // pointer it maps into logical stage units, the audio graph and its
-// first-interaction unlock, and the debug overlay. None of it appears here, and
-// none of it belongs anywhere else in this project.
+// first-interaction unlock, loading the produced assets, and the debug overlay.
+// None of it appears here, and none of it belongs anywhere else in this
+// project.
 //
 // What is left is `src/game.ts`.
 
@@ -20,7 +21,9 @@ if (!canvas)
   throw new Error("Orrery: the #stage canvas is missing from the page");
 
 // The state and debug surface types are inferred from `game`, so this module
-// names neither.
+// names neither. The asset root is left at its default, `assets/`, which is
+// where this build writes the sprites, sheets, particle systems, and sounds it
+// produces and the root every path in `src/constants.ts` is written against.
 const engine = createEngine({
   canvas,
   // The logical design size from specs/overview.md. The canvas element is sized

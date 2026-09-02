@@ -3,16 +3,18 @@
 // Every figure the specification fixes is named here exactly once, so no number
 // in this build is a guess and no spec value is left to interpretation.
 //
-// Every geometric value is in the fixed 1280x720 logical coordinate space
+// Every gameplay value is in the fixed 1280x720 logical coordinate space
 // defined by `specs/overview.md` (origin top-left, x right, y down). That space
 // is the engine's logical design size: the engine scales and letterboxes it
-// onto the canvas, so no value here is ever expressed in real pixels and
-// gameplay never leaves logical space. The pointer position the game reads is
-// in these same units, so a hit test against a hex center, a tray slot, or a
-// tape cell needs no conversion.
+// onto the canvas, so no gameplay value here is ever expressed in real pixels
+// and gameplay never leaves logical space. The pointer position the game reads
+// is in these same units, so a hit test against a hex center, a tray slot, or a
+// tape cell needs no conversion. Every canvas size is in pixels, and a sprite
+// is drawn at one unit per pixel, so a canvas `44` wide stands `44` units wide
+// in the world.
 //
 // THE LOOK IS NOT HERE, AND THAT IS DELIBERATE. Orrery fixes no palette, no
-// font, no artwork, no filament or arm rendering, no background, and no
+// type, no styling, no filament or arm rendering, no background, and no
 // animation style. There is not a single color or type face in this file, and
 // there is not meant to be one. The legibility lists in `specs/field.md`,
 // `specs/parts.md`, and `specs/editor.md` state what a player has to read at a
@@ -249,11 +251,24 @@ export const CONSTELLATION_TARGET = 6;
 /** The fewest chained copies a repeating set accepts (specs/sigils.md). */
 export const REPEAT_MIN = 2;
 
+// ---- Challenge and solution formats (specs/formats.md) -------------------
+
+/** The longest a challenge's name runs, in characters. The shortest is one. */
+export const NAME_MAX = 32;
+
 // ---- Modes (specs/modes/campaign.md, specs/modes/extras.md) --------------
 
 /** The campaign's course holds between these many challenges, inclusive. */
 export const CAMPAIGN_MIN = 8;
 export const CAMPAIGN_MAX = 16;
+
+/**
+ * The bounds difficulty rises between: challenge 1's reference solution places
+ * at most CAMPAIGN_OPENER_PARTS parts, and the last challenge's places at least
+ * CAMPAIGN_FINALE_PARTS.
+ */
+export const CAMPAIGN_OPENER_PARTS = 3;
+export const CAMPAIGN_FINALE_PARTS = 8;
 
 /** The Extras shelf, laid out in specs/challenges.md. */
 export const EXTRA_COUNT = 10;
