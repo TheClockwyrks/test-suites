@@ -1,7 +1,10 @@
 // Gantry — canonical constants. Supplied with the project. Do not edit.
 //
 // Every figure the specification fixes is named here exactly once, so no number
-// in this build is a guess and no spec value is left to interpretation.
+// in this build is a guess and no spec value is left to interpretation. Where
+// the specification names the constant that holds a value, that is the name it
+// carries here; where the specification fixes a value without naming a holder,
+// this file names one.
 //
 // World values are in the game's own units on the right-handed frame
 // `specs/world.md` defines: x and z horizontal, y up, the ground at y = 0.
@@ -20,7 +23,9 @@
 export const STAGE_W = 1280;
 export const STAGE_H = 720;
 
-/** The fixed simulation rate: a run advances in whole 1/TICK_HZ-second ticks. */
+/**
+ * The fixed simulation rate: a run advances in whole 1/TICK_HZ-second ticks.
+ */
 export const TICK_HZ = 60;
 
 // ---- The world (specs/world.md) ------------------------------------------
@@ -108,7 +113,9 @@ export const SWING_DAMPING = 0.05;
 /** The hoist cable snaps past this tension. */
 export const HOIST_CABLE_CAP = 3000;
 
-/** attach takes the waiting load whose lift point is within this of the hook. */
+/**
+ * attach takes the waiting load whose lift point is within this of the hook.
+ */
 export const ATTACH_RADIUS = 0.8;
 
 /** The three set-down tolerances release is judged against. */
@@ -119,8 +126,10 @@ export const PLACE_VEL_TOL = 0.6;
 // ---- The solve (specs/statics.md) ----------------------------------------
 
 /**
- * A factorization pivot below this fraction of the assembled matrix's largest
- * diagonal entry marks the system singular: a mechanism, and a collapse.
+ * A factorization pivot at or below this fraction of the largest diagonal entry
+ * of the supported system — what is left of the assembled matrix once the
+ * support rows and columns are gone — marks the system singular: a mechanism,
+ * and a collapse.
  */
 export const SINGULAR_TOL = 1e-8;
 
@@ -151,7 +160,9 @@ export const MEMBER_PICK_PX = 12;
 /**
  * The menus are keyboard-driven and the pointer works the 3D scene, so the
  * keyboard layout is the four-way pad and the menu vocabulary that comes with
- * it.
+ * it. A layout fixes a vocabulary rather than a set of bindings: ACTIONS below
+ * registers the names of that vocabulary Gantry speaks, and `pause`, which
+ * Gantry has no screen for, is left unregistered.
  */
 export const LAYOUT = "dpad-4";
 
@@ -253,18 +264,19 @@ export const CUES = [
 
 export type CueName = (typeof CUES)[number];
 
-/** The creak plays when a utilization crosses this, at most once per cooldown. */
+/**
+ * The creak plays when a utilization first reaches this, at most once per
+ * cooldown in run-clock seconds (specs/ui.md).
+ */
 export const CREAK_THRESHOLD = 0.8;
 export const CREAK_COOLDOWN = 0.5;
 
 // ---- The sites (specs/sites.md) ------------------------------------------
 
-/**
- * The six sites, in order. Their envelopes, anchors, budgets, loads,
- * obstacles, and par figures are fixed by `specs/sites.md`, which the build
- * transcribes exactly.
- */
+/** The number of sites, which the site select lists in order. */
 export const SITE_COUNT = 6;
+
+/** The six site names, in that order. */
 export const SITE_NAMES = [
   "First Lift",
   "Turnabout",
@@ -274,7 +286,266 @@ export const SITE_NAMES = [
   "Heavy Haul",
 ] as const;
 
-// ---- Assets (specs/assets.md) --------------------------------------------
+/** A position or a size on the world frame, in units (specs/world.md). */
+export interface Vec3 {
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+}
+
+/** An inclusive range on one axis. */
+export interface AxisRange {
+  readonly min: number;
+  readonly max: number;
+}
+
+/** A build envelope: the inclusive range it spans on each axis. */
+export interface Envelope {
+  readonly x: AxisRange;
+  readonly y: AxisRange;
+  readonly z: AxisRange;
+}
+
+/** A load pose: its lift point, and its yaw in degrees (specs/world.md). */
+export interface LoadPose {
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+  readonly yaw: number;
+}
+
+/** The three load classes, whose dimensions `specs/world.md` fixes. */
+export type LoadClass = "crate" | "container" | "drum";
+
+/**
+ * Each class's box, as width by height by depth at yaw 0 (`specs/world.md`).
+ */
+export const LOAD_CLASS_DIMENSIONS: Readonly<Record<LoadClass, Vec3>> = {
+  crate: { x: 2, y: 2, z: 2 },
+  container: { x: 4, y: 2, z: 2 },
+  drum: { x: 2, y: 3, z: 2 },
+};
+
+/** One load a site asks for: where it stands, and where it is wanted. */
+export interface SiteLoad {
+  readonly class: LoadClass;
+  readonly mass: number;
+  readonly from: LoadPose;
+  readonly to: LoadPose;
+}
+
+/** One obstacle, by its minimum corner and its size on each axis. */
+export interface Obstacle {
+  readonly min: Vec3;
+  readonly size: Vec3;
+}
+
+/** A site's par: the cost and the time a clear's score is shown beside. */
+export interface Par {
+  readonly cost: number;
+  readonly time: number;
+}
+
+/**
+ * One site: the envelope the crane is built inside, the ground nodes it is
+ * anchored to, the cost it is held to, the par, the loads to deliver, and the
+ * obstacles in the way.
+ */
+export interface Site {
+  readonly envelope: Envelope;
+  readonly anchors: readonly Vec3[];
+  readonly budget: number;
+  readonly par: Par;
+  readonly loads: readonly SiteLoad[];
+  /** Empty on a site that carries none. */
+  readonly obstacles: readonly Obstacle[];
+}
+
+/** The six sites, in the order `SITE_NAMES` names them. */
+export const SITES: readonly Site[] = [
+  // First Lift
+  {
+    envelope: {
+      x: { min: -8, max: 12 },
+      y: { min: 0, max: 16 },
+      z: { min: -8, max: 12 },
+    },
+    anchors: [
+      { x: 0, y: 0, z: 0 },
+      { x: 2, y: 0, z: 0 },
+      { x: 0, y: 0, z: 2 },
+      { x: 2, y: 0, z: 2 },
+    ],
+    budget: 3000,
+    par: { cost: 2400, time: 18 },
+    loads: [
+      {
+        class: "crate",
+        mass: 40,
+        from: { x: 10, y: 2, z: 0, yaw: 0 },
+        to: { x: 0, y: 2, z: 10, yaw: 0 },
+      },
+    ],
+    obstacles: [],
+  },
+  // Turnabout
+  {
+    envelope: {
+      x: { min: -10, max: 12 },
+      y: { min: 0, max: 16 },
+      z: { min: -10, max: 12 },
+    },
+    anchors: [
+      { x: 0, y: 0, z: 0 },
+      { x: 2, y: 0, z: 0 },
+      { x: 0, y: 0, z: 2 },
+      { x: 2, y: 0, z: 2 },
+    ],
+    budget: 3600,
+    par: { cost: 2400, time: 55 },
+    loads: [
+      {
+        class: "crate",
+        mass: 40,
+        from: { x: 9, y: 2, z: 0, yaw: 0 },
+        to: { x: -7, y: 2, z: 0, yaw: 0 },
+      },
+      {
+        class: "crate",
+        mass: 60,
+        from: { x: 0, y: 2, z: 9, yaw: 0 },
+        to: { x: 0, y: 2, z: -7, yaw: 0 },
+      },
+    ],
+    obstacles: [],
+  },
+  // Over the Wall
+  {
+    envelope: {
+      x: { min: -10, max: 12 },
+      y: { min: 0, max: 18 },
+      z: { min: -8, max: 8 },
+    },
+    anchors: [
+      { x: 0, y: 0, z: 0 },
+      { x: 2, y: 0, z: 0 },
+      { x: 0, y: 0, z: 2 },
+      { x: 2, y: 0, z: 2 },
+    ],
+    budget: 4000,
+    par: { cost: 3550, time: 40 },
+    loads: [
+      {
+        class: "crate",
+        mass: 50,
+        from: { x: 9, y: 2, z: 0, yaw: 0 },
+        to: { x: -5, y: 2, z: 0, yaw: 0 },
+      },
+    ],
+    obstacles: [{ min: { x: 5, y: 0, z: -6 }, size: { x: 1, y: 8, z: 12 } }],
+  },
+  // Long Reach
+  {
+    envelope: {
+      x: { min: -10, max: 20 },
+      y: { min: 0, max: 20 },
+      z: { min: -8, max: 8 },
+    },
+    anchors: [
+      { x: 0, y: 0, z: 0 },
+      { x: 2, y: 0, z: 0 },
+      { x: 0, y: 0, z: 2 },
+      { x: 2, y: 0, z: 2 },
+    ],
+    budget: 5600,
+    par: { cost: 5250, time: 47 },
+    loads: [
+      {
+        class: "container",
+        mass: 90,
+        from: { x: 6, y: 2, z: -6, yaw: 0 },
+        to: { x: 14, y: 2, z: 6, yaw: 90 },
+      },
+    ],
+    obstacles: [],
+  },
+  // High Shelf
+  {
+    envelope: {
+      x: { min: -12, max: 12 },
+      y: { min: 0, max: 18 },
+      z: { min: -8, max: 8 },
+    },
+    anchors: [
+      { x: 0, y: 0, z: 0 },
+      { x: 2, y: 0, z: 0 },
+      { x: 0, y: 0, z: 2 },
+      { x: 2, y: 0, z: 2 },
+    ],
+    budget: 4800,
+    par: { cost: 4200, time: 101 },
+    loads: [
+      {
+        class: "container",
+        mass: 80,
+        from: { x: 8, y: 2, z: 0, yaw: 0 },
+        to: { x: -7, y: 8, z: 0, yaw: 90 },
+      },
+      {
+        class: "crate",
+        mass: 40,
+        from: { x: 8, y: 2, z: -5, yaw: 0 },
+        to: { x: -7, y: 2, z: 4, yaw: 0 },
+      },
+    ],
+    obstacles: [{ min: { x: -9, y: 0, z: -2 }, size: { x: 4, y: 6, z: 4 } }],
+  },
+  // Heavy Haul
+  {
+    envelope: {
+      x: { min: -10, max: 18 },
+      y: { min: 0, max: 20 },
+      z: { min: -8, max: 8 },
+    },
+    anchors: [
+      { x: 0, y: 0, z: 0 },
+      { x: 2, y: 0, z: 0 },
+      { x: 4, y: 0, z: 0 },
+      { x: 0, y: 0, z: 2 },
+      { x: 2, y: 0, z: 2 },
+      { x: 4, y: 0, z: 2 },
+      { x: 0, y: 0, z: 4 },
+      { x: 2, y: 0, z: 4 },
+      { x: 4, y: 0, z: 4 },
+    ],
+    budget: 6000,
+    par: { cost: 4750, time: 107 },
+    loads: [
+      {
+        class: "drum",
+        mass: 120,
+        from: { x: 7, y: 3, z: 0, yaw: 0 },
+        to: { x: -7, y: 3, z: 0, yaw: 0 },
+      },
+      {
+        class: "crate",
+        mass: 30,
+        from: { x: 14, y: 2, z: 4, yaw: 0 },
+        to: { x: -4, y: 2, z: -6, yaw: 0 },
+      },
+    ],
+    obstacles: [],
+  },
+];
+
+// ---- Produced assets (specs/assets.md) -----------------------------------
+
+/**
+ * The one root every produced model and sound is committed under and loaded
+ * from. The engine resolves each asset path under it, relative to the page, so
+ * the built site loads its own files at any base path.
+ */
+export const ASSET_ROOT = "assets/";
 
 /** Voxel models are sculpted at eight voxels to the world unit. */
 export const VOXELS_PER_UNIT = 8;

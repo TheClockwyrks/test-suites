@@ -20,7 +20,9 @@ if (!canvas)
   throw new Error("Wick: the #stage canvas is missing from the page");
 
 // The state and debug surface types are inferred from `game`, so this module
-// names neither.
+// names neither. The asset root is left at its default, `assets/`, which is
+// where this build commits the sprites and sounds it produces and the root
+// every path in `src/constants.ts` is written against.
 const engine = createEngine({
   canvas,
   // The logical design size from specs/overview.md. The canvas element is sized

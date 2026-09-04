@@ -16,9 +16,9 @@
 // ticks are consumed, and the remainder waits for the next frame. Only the
 // `playing` screen ticks.
 //
-// This file fixes no palette, font, sprite artwork, ground pattern, or
-// animation timing; `specs/ui.md` and `specs/assets.md` state what must be
-// legible, and how the night looks is the build's to design.
+// This file fixes no palette, font, sprite artwork, or ground pattern;
+// `specs/ui.md` and `specs/assets.md` state what must be legible, and how the
+// night looks is the build's to design.
 
 // ---- Stage ---------------------------------------------------------------
 
@@ -37,6 +37,13 @@ export const TICK_HZ = 60;
 
 /** The length of one tick, in seconds. */
 export const TICK_DT = 1 / TICK_HZ;
+
+/**
+ * The slack a tick boundary allows: a tick is consumed while the accumulator
+ * is at least TICK_DT − TICK_EPSILON, and a remainder whose magnitude is below
+ * TICK_EPSILON is 0, so a frame of 0.5 seconds runs exactly 30 ticks.
+ */
+export const TICK_EPSILON = 1e-9;
 
 /** The run clock at which dawn arrives and the run is won, in seconds. */
 export const DAWN_TIME = 600;
@@ -70,6 +77,9 @@ export const CONTACT_COOLDOWN = 0.5;
 /** The least health any contact hit removes, whatever the armor. */
 export const MIN_DAMAGE_TAKEN = 1;
 
+/** Seconds the hurt flash runs after a contact hit. */
+export const HURT_FLASH = 0.3;
+
 // ---- Derived stats (specs/passives.md) -----------------------------------
 
 /**
@@ -98,7 +108,7 @@ export const SOOT_XP_PER_LEVEL = 0.1;
 export const LURE_PICKUP_PER_LEVEL = 0.25;
 
 /** The floor under every weapon's cooldown after cooldownMul, in seconds. */
-export const MIN_COOLDOWN = 0.1;
+export const MIN_COOLDOWN = 0.2;
 
 // ---- Slots, levels, and offers (specs/progression.md) --------------------
 
@@ -754,6 +764,13 @@ export const GEM_VALUES: Readonly<Record<GemTier, number>> = {
   large: 10,
 };
 
+/** The display name of every tier. */
+export const GEM_NAMES: Readonly<Record<GemTier, string>> = {
+  small: "Small Gem",
+  medium: "Medium Gem",
+  large: "Large Gem",
+};
+
 // ---- Enemies (specs/enemies.md) ------------------------------------------
 
 export const ENEMY_IDS = [
@@ -1031,6 +1048,13 @@ export const PICKUP_KINDS = ["chest", "bread", "draft"] as const;
 
 export type PickupKind = (typeof PICKUP_KINDS)[number];
 
+/** The display name of every kind. */
+export const PICKUP_NAMES: Readonly<Record<PickupKind, string>> = {
+  chest: "Chest",
+  bread: "Bread",
+  draft: "Draft",
+};
+
 /** A pickup is collected within `PICKUP_ITEM_RADIUS + PLAYER_RADIUS`. */
 export const PICKUP_ITEM_RADIUS = 16;
 
@@ -1052,7 +1076,27 @@ export const TITLE_TEXT = "WICK";
 export const TAGLINE_TEXT = "KEEP THE LIGHT";
 
 /** The title menu, in this order. */
-export const TITLE_ITEMS = ["LIGHT THE LAMP", "HOW TO PLAY"] as const;
+export const TITLE_ITEMS = [
+  "LIGHT THE LAMP",
+  "THE ALMANAC",
+  "HOW TO PLAY",
+] as const;
+
+/** The almanac screen's heading. */
+export const ALMANAC_TEXT = "THE ALMANAC";
+
+/** The almanac's tab bar, in this order. */
+export const ALMANAC_TABS = [
+  "TOOLS",
+  "TRINKETS",
+  "ENEMIES",
+  "PICKUPS",
+] as const;
+
+export type AlmanacTab = (typeof ALMANAC_TABS)[number];
+
+/** Entry rows the almanac's list shows at once. */
+export const ALMANAC_ROWS = 10;
 
 /** The level-up overlay's heading. */
 export const LEVEL_UP_TEXT = "THE LAMP BURNS BRIGHTER";
@@ -1061,6 +1105,9 @@ export const LEVEL_UP_TEXT = "THE LAMP BURNS BRIGHTER";
 export const CHEST_TEXT = "A CHEST OPENS";
 
 export const PAUSED_TEXT = "PAUSED";
+
+/** The pause menu, in this order. */
+export const PAUSE_ITEMS = ["RESUME", "MAIN MENU"] as const;
 
 /** The two end screens' headings. */
 export const FALLEN_TEXT = "THE LIGHT WENT OUT";
@@ -1074,6 +1121,80 @@ export const OFFER_NEW_TEXT = "NEW";
 
 /** The word before a level number, on offers and on the HUD. */
 export const LEVEL_LABEL = "LEVEL";
+
+// ---- Descriptions (specs/ui.md) ------------------------------------------
+//
+// One line for everything the almanac browses, and one for the offer the
+// level-up overlay presents when its pool is empty. Each is drawn as written.
+
+/** The one line the almanac and the level-up overlay show for a weapon. */
+export const WEAPON_DESCRIPTIONS: Readonly<Record<WeaponId, string>> = {
+  taper: "A slash in the way you face, striking everything the arc covers.",
+  ember: "A bolt at the nearest enemy, spent on the first thing it hits.",
+  pin: "A fan of darts at the nearest enemy, each one piercing.",
+  lantern: "Lanterns that circle the lamp and burn what they pass through.",
+  halo: "A ring of light around the lamp that pulses on its own rhythm.",
+  "oil-splash":
+    "Puddles scattered nearby that burn everything standing in them.",
+  spark: "Strikes on random enemies within range of the lamp.",
+  shard: "A shard that bounces off the edges of the view and keeps going.",
+  sconce: "A boomerang that slows, turns, and comes back to the lamp.",
+  flare: "A burst that catches every enemy around the lamp at once.",
+  pyre: "Taper transformed: a wider slash that feeds the lamp as it lands.",
+  beacon: "Ember transformed: a faster bolt that carries through a crowd.",
+  hail: "Pin transformed: a wider fan of darts that pierce further.",
+  chandelier: "Lantern transformed: lanterns that never go out.",
+  corona: "Halo transformed: a wider ring that feeds the lamp as it pulses.",
+  blaze: "Oil Splash transformed: puddles that burn hotter and faster.",
+};
+
+/** The one line the almanac and the level-up overlay show for a passive. */
+export const PASSIVE_DESCRIPTIONS: Readonly<Record<PassiveId, string>> = {
+  wick: "Every tool you carry does more damage.",
+  oil: "Every tool you carry fires more often.",
+  glass: "Every shape your tools make covers more ground.",
+  brass: "Armor: every hit against you takes less health.",
+  mirror: "Your tools make one more of whatever they make.",
+  bellows: "The lamplighter walks faster.",
+  tallow: "The lamp holds more health.",
+  tinder: "The lamp recovers health as the night goes on.",
+  soot: "Gems are worth more experience.",
+  lure: "Gems are drawn to the lamp from further away.",
+};
+
+/** The one line the almanac shows for an enemy. */
+export const ENEMY_DESCRIPTIONS: Readonly<Record<EnemyId, string>> = {
+  moth: "The first thing the light draws. Slow, weak, and never alone.",
+  bat: "Quicker than a moth and just as thin.",
+  rat: "Low and steady, and it takes more than one hit.",
+  gnat: "Drifts in a straight line and never turns. Arrives in swarms.",
+  beetle: "Armored and slow, and it hurts more than it looks like it should.",
+  wisp: "Weaves as it comes, so it never quite arrives where you expect.",
+  spider: "Fast and tough, and it closes the distance quickly.",
+  crow: "Fast, and it hits hard for its size.",
+  shade: "Heavy and slow, and it leaves a larger gem behind.",
+  hound: "The heaviest of the common dark, and the fastest of the heavy.",
+  mothwing: "An elite: a great moth that drops a chest when it falls.",
+  owl: "An elite: silent, heavy, and it drops a chest when it falls.",
+  dark: "The night itself, from nine minutes on. It outlasts almost anything.",
+};
+
+/** The one line the almanac shows for a gem tier. */
+export const GEM_DESCRIPTIONS: Readonly<Record<GemTier, string>> = {
+  small: "The experience a common death leaves behind.",
+  medium: "A heavier gem, worth more toward the next level.",
+  large: "The heaviest gem, left by the heaviest of the dark.",
+};
+
+/** The one line the almanac shows for a pickup. */
+export const PICKUP_DESCRIPTIONS: Readonly<Record<PickupKind, string>> = {
+  chest: "Opens beside the lamp and transforms a tool at its top level.",
+  bread: "Restores 30 health to the lamplighter who walks over it.",
+  draft: "Draws every gem in the night to the lamp at once.",
+};
+
+/** The one line the level-up overlay shows for lamp oil. */
+export const LAMP_OIL_DESCRIPTION = "Restores 30 health and fills no slot.";
 
 // ---- Input actions (specs/controls.md) -----------------------------------
 
@@ -1112,6 +1233,9 @@ export const BINDINGS: Readonly<Record<ActionName, readonly string[]>> = {
   mute: ["KeyM"],
 };
 
+/** Logical units of wheel travel that scroll the almanac's list by one row. */
+export const WHEEL_ROW = 100;
+
 // ---- Audio cues (specs/ui.md) --------------------------------------------
 
 /** The fifteen cue names, one per event. Define and play exactly these. */
@@ -1140,6 +1264,229 @@ export type CueName = (typeof CUES)[keyof typeof CUES];
  * for the length of a run, and the hum while Halo or Corona is held.
  */
 export const LOOPING_CUES: readonly CueName[] = [CUES.music, CUES.hum];
+
+// ---- The produced assets (specs/assets.md) -------------------------------
+//
+// Every produced file this build loads, as a path under `assets/` at the root
+// of this repository. The files do not exist yet: this build produces them with
+// the asset tools on the `PATH` and commits them there. Every canvas size is in
+// pixels, and a sprite is drawn at one unit per pixel, so a canvas `24` wide
+// stands `24` units wide in the world.
+
+/** Seconds each frame of a walk cycle or a spin is shown. */
+export const WALK_FRAME_TIME = 0.1;
+
+/** Seconds a death puff lasts, all of its frames together. */
+export const PUFF_TIME = 0.4;
+
+/**
+ * A sheet whose frames are separate files: frame `i`, counted from `0`, is
+ * `<dir>/<i>.png`, each on a canvas of the sheet's size.
+ */
+export interface SpriteSheet {
+  readonly dir: string;
+  readonly frames: number;
+}
+
+/** The lamplighter's canvas, idle and walking. */
+export const LAMPLIGHTER_SPRITE_WIDTH = 24;
+export const LAMPLIGHTER_SPRITE_HEIGHT = 32;
+
+/** The idle lamplighter, one sprite. */
+export const LAMPLIGHTER_IDLE_PATH = "sprites/lamplighter/idle.png";
+
+/** The lamplighter's walk cycle. */
+export const LAMPLIGHTER_WALK_SHEET: SpriteSheet = {
+  dir: "sprites/lamplighter/walk",
+  frames: 6,
+};
+
+/**
+ * Each enemy's walk cycle is the sheet `sprites/enemies/<id>`, ENEMY_FRAMES
+ * frames on a square canvas twice the enemy's radius in ENEMIES.
+ */
+export const ENEMY_SHEET_DIR = "sprites/enemies";
+export const ENEMY_FRAMES = 4;
+
+/** The death puff every enemy shares, on a square canvas of PUFF_SPRITE_SIZE. */
+export const PUFF_SHEET: SpriteSheet = { dir: "sprites/puff", frames: 4 };
+export const PUFF_SPRITE_SIZE = 24;
+
+/** The three gems, each one sprite on a square canvas of its size. */
+export const GEM_PATHS: Readonly<Record<GemTier, string>> = {
+  small: "sprites/gems/small.png",
+  medium: "sprites/gems/medium.png",
+  large: "sprites/gems/large.png",
+};
+
+export const GEM_SPRITE_SIZES: Readonly<Record<GemTier, number>> = {
+  small: 8,
+  medium: 12,
+  large: 16,
+};
+
+/** The three pickups, each one sprite on a square canvas of PICKUP_SPRITE_SIZE. */
+export const PICKUP_PATHS: Readonly<Record<PickupKind, string>> = {
+  chest: "sprites/pickups/chest.png",
+  bread: "sprites/pickups/bread.png",
+  draft: "sprites/pickups/draft.png",
+};
+
+export const PICKUP_SPRITE_SIZE = 24;
+
+/** The ground tile, repeated across the world, on a square canvas of its size. */
+export const GROUND_TILE_PATH = "sprites/ground.png";
+export const GROUND_TILE_SIZE = 64;
+
+/**
+ * One weapon's effect, drawn over the weapon's live shape and scaled in code to
+ * it. A single sprite has `frames` `1` and `path` names its file; a sheet has
+ * `frames` above `1` and `path` names its directory, frame `i` at
+ * `<path>/<i>.png`. `width` and `height` are the canvas the file is produced on.
+ */
+export interface EffectSprite {
+  readonly path: string;
+  readonly frames: number;
+  readonly width: number;
+  readonly height: number;
+}
+
+/** The sixteen weapon effects, an evolved weapon's on its base's canvas. */
+export const EFFECT_SPRITES: Readonly<Record<WeaponId, EffectSprite>> = {
+  taper: {
+    path: "sprites/effects/taper.png",
+    frames: 1,
+    width: 120,
+    height: 40,
+  },
+  ember: {
+    path: "sprites/effects/ember.png",
+    frames: 1,
+    width: 16,
+    height: 16,
+  },
+  pin: { path: "sprites/effects/pin.png", frames: 1, width: 12, height: 12 },
+  lantern: {
+    path: "sprites/effects/lantern.png",
+    frames: 1,
+    width: 28,
+    height: 28,
+  },
+  halo: {
+    path: "sprites/effects/halo.png",
+    frames: 1,
+    width: 160,
+    height: 160,
+  },
+  "oil-splash": {
+    path: "sprites/effects/oil-splash.png",
+    frames: 1,
+    width: 100,
+    height: 100,
+  },
+  spark: { path: "sprites/effects/spark", frames: 4, width: 80, height: 80 },
+  shard: {
+    path: "sprites/effects/shard.png",
+    frames: 1,
+    width: 16,
+    height: 16,
+  },
+  sconce: { path: "sprites/effects/sconce", frames: 4, width: 24, height: 24 },
+  flare: { path: "sprites/effects/flare", frames: 6, width: 128, height: 128 },
+  pyre: { path: "sprites/effects/pyre.png", frames: 1, width: 120, height: 40 },
+  beacon: {
+    path: "sprites/effects/beacon.png",
+    frames: 1,
+    width: 16,
+    height: 16,
+  },
+  hail: { path: "sprites/effects/hail.png", frames: 1, width: 12, height: 12 },
+  chandelier: {
+    path: "sprites/effects/chandelier.png",
+    frames: 1,
+    width: 28,
+    height: 28,
+  },
+  corona: {
+    path: "sprites/effects/corona.png",
+    frames: 1,
+    width: 160,
+    height: 160,
+  },
+  blaze: {
+    path: "sprites/effects/blaze.png",
+    frames: 1,
+    width: 100,
+    height: 100,
+  },
+};
+
+/** The twenty-seven icons, each one sprite on a square canvas of ICON_SIZE. */
+export const ICON_PATHS: Readonly<Record<OfferId, string>> = {
+  taper: "icons/taper.png",
+  ember: "icons/ember.png",
+  pin: "icons/pin.png",
+  lantern: "icons/lantern.png",
+  halo: "icons/halo.png",
+  "oil-splash": "icons/oil-splash.png",
+  spark: "icons/spark.png",
+  shard: "icons/shard.png",
+  sconce: "icons/sconce.png",
+  flare: "icons/flare.png",
+  pyre: "icons/pyre.png",
+  beacon: "icons/beacon.png",
+  hail: "icons/hail.png",
+  chandelier: "icons/chandelier.png",
+  corona: "icons/corona.png",
+  blaze: "icons/blaze.png",
+  wick: "icons/wick.png",
+  oil: "icons/oil.png",
+  glass: "icons/glass.png",
+  brass: "icons/brass.png",
+  mirror: "icons/mirror.png",
+  bellows: "icons/bellows.png",
+  tallow: "icons/tallow.png",
+  tinder: "icons/tinder.png",
+  soot: "icons/soot.png",
+  lure: "icons/lure.png",
+  "lamp-oil": "icons/lamp-oil.png",
+};
+
+export const ICON_SIZE = 24;
+
+/** The one produced file per cue name, the music bed included. */
+export const CUE_PATHS: Readonly<Record<CueName, string>> = {
+  hit: "audio/hit.wav",
+  kill: "audio/kill.wav",
+  gem: "audio/gem.wav",
+  hurt: "audio/hurt.wav",
+  "level-up": "audio/level-up.wav",
+  choose: "audio/choose.wav",
+  chest: "audio/chest.wav",
+  evolve: "audio/evolve.wav",
+  pickup: "audio/pickup.wav",
+  fallen: "audio/fallen.wav",
+  dawn: "audio/dawn.wav",
+  "menu-move": "audio/menu-move.wav",
+  "menu-confirm": "audio/menu-confirm.wav",
+  music: "audio/music.wav",
+  hum: "audio/hum.wav",
+};
+
+/** The music bed's score, committed beside its `.wav`. */
+export const MUSIC_SCORE_PATH = "audio/music.mid";
+
+/** The least the music bed runs, in seconds. */
+export const MUSIC_MIN_SECONDS = 30;
+
+/** The least the hum loop runs, in seconds. */
+export const HUM_MIN_SECONDS = 2;
+
+/**
+ * A file authored to loop, `hum` and `music`, has its last and first samples
+ * within this fraction of full scale of each other in every channel.
+ */
+export const LOOP_SEAM_TOLERANCE = 0.01;
 
 // ---- Debug surface (specs/instrumentation.md) ----------------------------
 
