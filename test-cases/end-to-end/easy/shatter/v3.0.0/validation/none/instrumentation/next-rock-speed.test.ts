@@ -20,7 +20,11 @@
 // under one in a hundred thousand.
 
 import { afterEach, beforeEach, it } from "vitest";
-import { assertEqual, assertGreaterThan, assertLessThanOrEqual } from "../assert";
+import {
+  assertEqual,
+  assertGreaterThan,
+  assertLessThanOrEqual,
+} from "../assert";
 import { WAVE_BANNER_TIME } from "../constants";
 import {
   captureStill,
