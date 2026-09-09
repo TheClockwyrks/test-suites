@@ -37,8 +37,8 @@ import {
   captureReplay,
   createHarness,
   critterTile,
-  keyFor,
   poseBear,
+  press,
   sameTile,
   startCrossing,
   tileKey,
@@ -100,7 +100,7 @@ it("reports the critter's tile as its target within a tick of each hop", async (
       // The press, the tick that delivers it, and then the one tick the rule
       // allows the bear to answer it in. The cooldown is run out afterwards, so
       // the reading is taken well inside it.
-      await h.tap(keyFor(direction));
+      await press(h, direction);
       await h.advance(1);
       const hopped = h.snapshot();
       readings.push({

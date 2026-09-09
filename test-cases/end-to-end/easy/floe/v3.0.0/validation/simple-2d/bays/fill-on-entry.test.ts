@@ -20,7 +20,7 @@ import { BAY_COUNT } from "../constants";
 import {
   captureReplay,
   createHarness,
-  keyFor,
+  press,
   startCrossing,
   type Harness,
 } from "../harness";
@@ -59,7 +59,7 @@ it("fills the bay the hop landed in, and no other", async () => {
   poseAtBayMouth(h, BAY);
 
   const filled = await captureReplay(h, "fill", async () => {
-    await h.tap(keyFor("up"));
+    await press(h, "up");
     const landed = h.snapshot();
     await h.advance(AFTER_FRAMES);
     return landed;

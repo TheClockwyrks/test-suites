@@ -27,7 +27,7 @@ import { BAY_COUNT } from "../constants";
 import {
   captureReplay,
   createHarness,
-  keyFor,
+  press,
   startCrossing,
   type Harness,
 } from "../harness";
@@ -66,7 +66,7 @@ it("moves the phase to clearing on the hop that fills the fifth bay", async () =
   assertEqual(posed.phase, "crossing", "four posed bays clear nothing");
 
   const cleared = await captureReplay(h, "clear", async () => {
-    await h.tap(keyFor("up"));
+    await press(h, "up");
     const landed = h.snapshot();
     await h.advance(AFTER_FRAMES);
     return landed;

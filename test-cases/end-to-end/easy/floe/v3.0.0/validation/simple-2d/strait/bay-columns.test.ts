@@ -44,7 +44,7 @@ import { assertDeepEqual } from "../assert";
 import {
   captureReplay,
   createHarness,
-  keyFor,
+  press,
   startCrossing,
   ticksFor,
   type Harness,
@@ -89,7 +89,7 @@ it("accepts a hop up from row 2 at every one of the ten bay columns", async () =
       startCrossing(h);
       poseHopUpFromWater(h, col);
 
-      await h.tap(keyFor("up"));
+      await press(h, "up");
       landings.push({ col, bay, after: h.snapshot().bays });
       await h.advance(ticksFor(AFTER_SECONDS));
     }

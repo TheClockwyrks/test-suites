@@ -42,7 +42,7 @@ import { assertDeepEqual, assertEqual } from "../assert";
 import {
   captureReplay,
   createHarness,
-  keyFor,
+  press,
   startCrossing,
   ticksFor,
   type Harness,
@@ -101,7 +101,7 @@ it("refuses a hop up from row 2 at every column of row 1 no bay covers", async (
       // The lives it stands with, read before the hop rather than assumed: what
       // the item asks is that the refusal costs one, not what the run began on.
       const before = h.snapshot().lives;
-      await h.tap(keyFor("up"));
+      await press(h, "up");
       const after = h.snapshot();
       refusals.push({
         col,

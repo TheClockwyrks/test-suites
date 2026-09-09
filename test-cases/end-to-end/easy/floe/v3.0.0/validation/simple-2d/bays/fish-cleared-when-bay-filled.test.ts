@@ -21,7 +21,7 @@ import { assertEqual, assertNull } from "../assert";
 import {
   captureReplay,
   createHarness,
-  keyFor,
+  press,
   startCrossing,
   type Harness,
 } from "../harness";
@@ -56,7 +56,7 @@ it("takes the bonus catch off when its bay is filled", async () => {
   );
 
   const taken = await captureReplay(h, "fill", async () => {
-    await h.tap(keyFor("up"));
+    await press(h, "up");
     const landed = h.snapshot();
     await h.advance(AFTER_FRAMES);
     return landed;

@@ -23,9 +23,10 @@
 // bays on — cancel out and what remains is the panel's own text. A fact is then
 // looked for as a STANDALONE TOKEN in that text, so `13` is not found inside
 // `130`, and a figure is taken under any of its groupings, so a panel that set a
-// score of `1240` as `1,240` reports the one figure. Nothing here asserts a
-// layout, a label, an order or a format: a build may lay its panel out however it
-// likes.
+// score of `1240` as `1,240` reports the one figure. A figure's boundary is any
+// non-digit, so a label or a unit set flush against it — `L6`, `17.00s` — still
+// reports it. Nothing here asserts a layout, a label, an order or a format: a
+// build may lay its panel out however it likes.
 //
 // THE POSED STRAIT IS BUILT SO EVERY FACT IS ITS OWN NUMBER. The level, the
 // lives, the score, the timer, the critter's tile and center, the bear's tile,
@@ -176,13 +177,20 @@ function settings(value: string | number): string[] {
 /**
  * Whether the panel drew `value` as a standalone token, ignoring case and taking
  * any of {@link settings}' groupings of a figure.
+ *
+ * A FIGURE is bounded by non-digits, so `13` is not found inside `130`, `213` or
+ * `1,300`, while a figure a build fused to its label or its unit — `L6`, `lv6`,
+ * `#220`, `17.00s` — is found: specs/instrumentation.md fixes no format for a
+ * registered fact beyond each being short enough to read on a line. A WORD is
+ * bounded by non-alphanumerics, so `right` is not found inside `bright`.
  */
 function reports(panel: readonly string[], value: string | number): boolean {
   const wanted = settings(value)
     .map((setting) => setting.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
     .join("|");
+  const boundary = /^-?\d+(\.\d+)?$/.test(String(value)) ? "0-9" : "A-Za-z0-9";
   const pattern = new RegExp(
-    `(^|[^A-Za-z0-9])(?:${wanted})([^A-Za-z0-9]|$)`,
+    `(^|[^${boundary}])(?:${wanted})([^${boundary}]|$)`,
     "i",
   );
   return panel.some((run) => pattern.test(run));

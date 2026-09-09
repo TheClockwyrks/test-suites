@@ -1289,9 +1289,27 @@ export async function holdFor(
 export const HOP_COOLDOWN_TICKS = ticksFor(HOP_COOLDOWN);
 
 /**
+ * Press a direction for exactly the one frame that reads it, then release it.
+ *
+ * specs/controls.md reads the four movement actions AS HELD on the `playing`
+ * screen, so the key is down while the frame runs and is let go after it: a
+ * build that reads the direction's held value that frame sees it, and so does
+ * one that reads the press edge the engine latched on the way down. A
+ * `keydown`/`keyup` pair delivered BETWEEN two frames is what a held reading is
+ * entitled to miss, so nothing here taps.
+ *
+ * One frame of game time passes and the cooldown is left running. This is the
+ * press a check drives when it reads the very frame the hop is taken on;
+ * {@link hop} is the press with the cooldown run out afterwards.
+ */
+export async function press(h: Harness, direction: Facing): Promise<void> {
+  await holdFor(h, keyFor(direction), 1);
+}
+
+/**
  * Hop the critter one tile with a real key press, and leave the cooldown spent.
  *
- * One tap, one frame — which is the frame that delivers the press edge, and so
+ * One {@link press}, one frame — the frame the held direction is read on, and so
  * the tick that takes the hop — then `HOP_COOLDOWN_TICKS` frames with NO key held,
  * which runs the cooldown out without offering a second hop. So exactly one hop
  * happens, and the critter is free to hop again when this returns.
@@ -1302,7 +1320,7 @@ export const HOP_COOLDOWN_TICKS = ticksFor(HOP_COOLDOWN);
  * it posed with `travel: false`.
  */
 export async function hop(h: Harness, direction: Facing): Promise<void> {
-  await h.tap(keyFor(direction));
+  await press(h, direction);
   await h.advance(HOP_COOLDOWN_TICKS);
 }
 

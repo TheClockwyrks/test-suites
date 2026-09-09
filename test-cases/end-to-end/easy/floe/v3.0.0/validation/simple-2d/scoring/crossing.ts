@@ -20,7 +20,7 @@
 // bay fills — and reads no score off it; this one carries the payment with it.
 
 import { BAYS, WATER_TOP } from "../constants";
-import { keyFor, poseLane, type FloeSnapshot, type Harness } from "../harness";
+import { poseLane, press, type FloeSnapshot, type Harness } from "../harness";
 
 /**
  * The column a bay is entered from: its left column.
@@ -72,7 +72,7 @@ export async function completingHop(
   h.debug.addCritter(col, WATER_TOP);
 
   const before = h.snapshot().score;
-  await h.tap(keyFor("up"));
+  await press(h, "up");
   const landed = h.snapshot();
   return { before, after: landed.score, paid: landed.score - before, landed };
 }

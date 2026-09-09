@@ -33,7 +33,7 @@ import { ICE_BOTTOM, ROW_NEAR, SCORE_ROW, START_COL } from "../constants";
 import {
   captureReplay,
   createHarness,
-  keyFor,
+  press,
   startCrossing,
   ticksFor,
   type Harness,
@@ -68,7 +68,7 @@ it("pays ten for the row a hop newly reaches, and nothing else", async () => {
   assertEqual(posed.score, 0, "a fresh run's score");
 
   const advanced = await captureReplay(h, "score", async () => {
-    await h.tap(keyFor("up"));
+    await press(h, "up");
     const landed = h.snapshot();
     await h.advance(AFTER_FRAMES);
     return landed;

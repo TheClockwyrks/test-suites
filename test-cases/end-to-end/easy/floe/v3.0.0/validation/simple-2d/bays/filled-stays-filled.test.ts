@@ -21,7 +21,7 @@ import { BAYFILL_PAUSE, BAY_COUNT } from "../constants";
 import {
   captureReplay,
   createHarness,
-  keyFor,
+  press,
   startCrossing,
   ticksFor,
   type Harness,
@@ -60,7 +60,7 @@ it("keeps the first bay filled when a second crossing fills another", async () =
   // The first crossing, and the hold it opens, so the second hop is taken by the
   // fresh critter rather than by a critter posed back onto the strait.
   poseAtBayMouth(h, FIRST_BAY);
-  await h.tap(keyFor("up"));
+  await press(h, "up");
   await h.advance(HOLD_FRAMES);
   const between = h.snapshot();
   assertEqual(between.bays[FIRST_BAY], true, `bay ${FIRST_BAY} filled`);
@@ -77,7 +77,7 @@ it("keeps the first bay filled when a second crossing fills another", async () =
   poseAtBayMouth(h, SECOND_BAY);
 
   const both = await captureReplay(h, "fill", async () => {
-    await h.tap(keyFor("up"));
+    await press(h, "up");
     const landed = h.snapshot();
     await h.advance(AFTER_FRAMES);
     return landed;

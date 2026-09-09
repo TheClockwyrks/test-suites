@@ -31,7 +31,7 @@ import { BAYFILL_PAUSE, ROW_NEAR, START_COL } from "../constants";
 import {
   captureReplay,
   createHarness,
-  keyFor,
+  press,
   startCrossing,
   ticksFor,
   type Harness,
@@ -83,7 +83,7 @@ it("puts a fresh critter on the near shore with a full timer", async () => {
   h.debug.setTimer(POSED_TIMER);
 
   const fresh = await captureReplay(h, "fill", async () => {
-    await h.tap(keyFor("up"));
+    await press(h, "up");
     await h.advance(HOLD_FRAMES + TOLERANCE_FRAMES);
     return h.snapshot();
   });

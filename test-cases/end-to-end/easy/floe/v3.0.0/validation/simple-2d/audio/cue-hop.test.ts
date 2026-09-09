@@ -35,7 +35,7 @@ import {
   captureReplay,
   createHarness,
   critterTile,
-  keyFor,
+  press,
   startCrossing,
   ticksFor,
   watchCues,
@@ -95,7 +95,7 @@ it("plays the hop cue once on the accepted hop and not at all on the refused one
 
     // DOWN from the bottom row of the grid: refused (specs/hopping.md).
     const beforeRefused = played.length;
-    await h.tap(keyFor("down"));
+    await press(h, "down");
     await h.advance(SETTLE_TICKS);
     const refused = sounded(played, beforeRefused, CUES.hop);
     const stood = critterTile(h.snapshot());
@@ -103,7 +103,7 @@ it("plays the hop cue once on the accepted hop and not at all on the refused one
     // UP onto the ice band, which this strait leaves clear: accepted.
     const beforeHop = played.length;
     const beforeFrame = h.engine.frame().count;
-    await h.tap(keyFor("up"));
+    await press(h, "up");
     const onHop = played
       .slice(beforeHop)
       .filter((entry) => entry.cue === CUES.hop);
