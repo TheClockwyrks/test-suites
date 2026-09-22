@@ -1,0 +1,18 @@
+# The preview versions The Spec Cabinet writes beside the suites for the local
+# stack to ingest. A preview is produced from a draft rather than authored, and
+# is rewritten on every save, so it is never committed.
+.previews/
+
+# What installing a scaffolded workspace's dependencies leaves behind, and the
+# folder a validation run vendors its synthesized media into. Neither is suite
+# content: a workspace, a demonstration and a reference implementation are the
+# files their author wrote, and both of these are reproduced on demand.
+node_modules/
+.vendor/
+
+# Editor and operating system litter.
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
