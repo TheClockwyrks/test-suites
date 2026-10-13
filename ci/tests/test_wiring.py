@@ -53,6 +53,12 @@ PIPELINE_ONLY = {"rust-clippy", "rust-doc", "rust-test", "shell-tests", "ci-test
 # string, which is empty for a kind that adds none.
 KIND_PIPELINE_ONLY = ""
 PIPELINE_ONLY |= set(KIND_PIPELINE_ONLY.split())
+# And so are the ones this repository adds over its kind's: on a Rust track that
+# drives a browser, the gate holding the workspace's Playwright to the image,
+# which needs the workspace installed; and the gates the repository writes
+# itself, each given a step by the kit's render.
+REPOSITORY_PIPELINE_ONLY = ""
+PIPELINE_ONLY |= set(REPOSITORY_PIPELINE_ONLY.split())
 
 # The gate tracks, and the image each runs in. The Rust track is a property of
 # this repository rather than of its kind: a repository whose Rust suite drives
