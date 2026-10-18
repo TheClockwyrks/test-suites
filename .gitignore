@@ -1,3 +1,31 @@
+# Cargo's build output.
+/target/
+
+# The installed npm packages, put back by `npm ci`, and what a package builds.
+node_modules/
+dist/
+
+# Tool caches.
+.cspellcache
+__pycache__/
+*.pyc
+/ci/.venv/
+/ci/.pytest_cache/
+.ruff_cache/
+
+# Editor and operating system droppings.
+.DS_Store
+*~
+
+# Environment files hold secrets.
+.env
+.env.*
+!.env.*.example
+
+# Scratch work at the root, so none of it is offered to a commit. Anchored, so
+# a suite's own folder of that name stays suite content.
+/tmp/
+
 # The preview versions The Spec Cabinet writes beside the suites for the local
 # stack to ingest. A preview is produced from a draft rather than authored, and
 # is rewritten on every save, so it is never committed.
@@ -7,12 +35,11 @@
 # folder a validation run vendors its synthesized media into. Neither is suite
 # content: a workspace, a demonstration and a reference implementation are the
 # files their author wrote, and both of these are reproduced on demand.
-node_modules/
+# node_modules/ is ignored above.
 .vendor/
 
 # Editor and operating system litter.
 .vscode/
 .idea/
 *.swp
-.DS_Store
 Thumbs.db
