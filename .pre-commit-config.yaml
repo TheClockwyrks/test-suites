@@ -16,9 +16,16 @@ repos:
     rev: v6.0.0
     hooks:
       - id: check-added-large-files
-        # The extraction's commit map, one line per monorepo commit, is larger
-        # than the hook's 500 KB and is committed once, as filter-repo wrote it.
-        exclude: "^history/commit-map$"
+        # The extraction's commit map and path list, one line per superrepo
+        # commit and per extracted path, are larger than the hook's 500 KB and
+        # are committed once, as the extraction wrote them. A test-case or
+        # game-jam version ships what a playable game needs: a reference
+        # implementation's music track or gameplay recording is several
+        # megabytes, a performance case's oracle output over one, and a full
+        # spec over the 500 kB default. None of those is a mistake this hook
+        # should stop, and a new version is a copy of the last, so every version
+        # directory is left out, as it is for end-of-file-fixer below.
+        exclude: '^history/(commit-map|paths\.txt)$|^(test-cases|game-jams)/.*/v[0-9]+\.[0-9]+\.[0-9]+/'
       - id: check-case-conflict
       - id: check-executables-have-shebangs
       - id: check-illegal-windows-names
@@ -28,7 +35,11 @@ repos:
         exclude: '(^|/)tsconfig(\.[^/]+)?\.json$'
       - id: check-merge-conflict
       - id: end-of-file-fixer
-        exclude: '\.(svg|png|ico|woff2?)$'
+        # Binary assets are left alone, and so is every test-case and game-jam
+        # version: a frozen version is immutable (the `frozen-paths` gate
+        # refuses a change to it), and some of them hold files that end without
+        # a newline, which this hook would rewrite.
+        exclude: '\.(svg|png|ico|woff2?)$|^(test-cases|game-jams)/.*/v[0-9]+\.[0-9]+\.[0-9]+/'
       - id: check-shebang-scripts-are-executable
         exclude: '\.rs$'
       - id: check-symlinks

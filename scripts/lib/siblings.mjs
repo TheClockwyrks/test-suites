@@ -53,7 +53,8 @@ export const SIBLINGS = {
 };
 
 /** Whether every one of `paths` exists under `root`. */
-const holds = (root, paths) => paths.every((path) => existsSync(join(root, path)));
+const holds = (root, paths) =>
+  paths.every((path) => existsSync(join(root, path)));
 
 /**
  * The root of the named repository's checkout, found as the header says. Throws

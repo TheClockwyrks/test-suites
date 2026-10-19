@@ -45,10 +45,7 @@ const ts = require("typescript");
 
 /** Paths a project's `rootDirs` may name, relative to the repository, and where each is now. */
 const MOVED = new Map([
-  [
-    "packages/case-harness/src",
-    "node_modules/@clockwyrks/case-harness/src",
-  ],
+  ["packages/case-harness/src", "node_modules/@clockwyrks/case-harness/src"],
 ]);
 
 // Under the workspace's node_modules rather than the system's temporary directory:

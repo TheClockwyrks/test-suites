@@ -169,6 +169,21 @@ stages:
               testResultsFiles: $(Build.SourcesDirectory)/target/gate-artifacts/typescript/junit.xml
               testRunTitle: TypeScript tests
               failTaskOnMissingResultsFile: false
+          - script: uv run --quiet --project ci gate run frozen-paths
+            displayName: frozen-paths (this repository's own gate)
+            condition: eq(variables['checksReady'], 'true')
+          - script: uv run --quiet --project ci gate run spec-prose
+            displayName: spec-prose (this repository's own gate)
+            condition: eq(variables['checksReady'], 'true')
+          - script: uv run --quiet --project ci gate run spec-vocabulary
+            displayName: spec-vocabulary (this repository's own gate)
+            condition: eq(variables['checksReady'], 'true')
+          - script: uv run --quiet --project ci gate run audio-packs
+            displayName: audio-packs (this repository's own gate)
+            condition: eq(variables['checksReady'], 'true')
+          - script: uv run --quiet --project ci gate run validators-typecheck
+            displayName: validators-typecheck (this repository's own gate)
+            condition: eq(variables['checksReady'], 'true')
 
   # A tag's run publishes here, after every gate passed: each package of the
   # npm workspace whose manifest is public is published to the project's feed

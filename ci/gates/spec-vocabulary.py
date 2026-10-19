@@ -13,7 +13,6 @@ from the_test_cabinet_ci import GIT_LOCATION_VARIABLES, enter_repo_root, fail, r
 
 enter_repo_root()
 require_tool("node", "The devcontainer and the web CI image install it.")
-require_tool("git", "The devcontainer and the web CI image install it.")
 
 if run(["node", "scripts/ci/spec-vocabulary-check.mjs"], unset=GIT_LOCATION_VARIABLES).returncode != 0:
     fail(
