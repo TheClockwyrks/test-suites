@@ -11,16 +11,34 @@
     "build": "npm run build --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "vitest run",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "node scripts/format-check.mjs --write",
+    "format:check": "node scripts/format-check.mjs",
     "lint:md": "markdownlint-cli2",
-    "spell": "cspell lint --no-progress --cache"
+    "lint:specs": "uv run --quiet --project ci gate run spec-prose",
+    "spell": "cspell lint --no-progress --cache",
+    "typecheck:validators": "node scripts/typecheck-validators.mjs"
   },
   "devDependencies": {
+    "@clockwyrks/case-harness": "1.1.1",
+    "@clockwyrks/particle-runtime": "1.1.1",
+    "@clockwyrks/simple-2d": "1.1.1",
+    "@clockwyrks/simple-3d": "1.1.1",
+    "@clockwyrks/structured-2d": "1.1.1",
+    "@clockwyrks/structured-3d": "1.1.1",
+    "@clockwyrks/voxel-runtime": "1.1.1",
+    "@napi-rs/canvas": "1.0.8",
+    "@types/node": "^25",
+    "@types/three": "0.185.4",
     "@vitest/coverage-v8": "5.0.0",
     "cspell": "10.2.2",
     "markdownlint-cli2": "0.22.1",
+    "playwright": "1.63.0",
     "prettier": "3.8.4",
+    "smol-toml": "1.8.0",
+    "three": "0.185.1",
+    "ts-essentials": "10.2.1",
+    "typescript": "6.0.3",
+    "vite": "^6",
     "vitest": "5.0.0"
   }
 }

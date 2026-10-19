@@ -23,3 +23,19 @@ package-lock.json
 # Markdown style is markdownlint's.
 *.md
 *.mdx
+
+# --- The catalog -----------------------------------------------------------
+
+# The frozen test-case versions are left out too, but not here:
+# scripts/format-check.mjs, which `npm run format:check` runs, derives them
+# from their `.frozen` markers on every run, so the list never goes stale.
+# A lattice scenario is the designer's to write (tools/lattice-designer), in
+# the layout it saves, which .markdownlint-cli2.yaml and cspell.json leave out
+# too.
+/test-cases/performance/hard/lattice/*/cases/*.json
+# The Handlebars templates, which Prettier does not parse.
+/**/*.hbs
+# What a case vendors or a build writes, and the scratch a tool leaves.
+build/
+/**/.vendor/**
+/**/vendor/**

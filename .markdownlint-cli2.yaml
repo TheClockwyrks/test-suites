@@ -27,6 +27,14 @@ globs:
 
 # `gitignore: true` above keeps the build outputs and the installed packages
 # out. It does not cover `.git` itself, because git does not ignore its own
-# directory, and a repository is not prose.
+# directory, and a repository is not prose. What a case vendors or a build
+# writes, the Handlebars templates and the lattice scenarios the designer saves
+# are left out here, in cspell.json's `ignorePaths` and in .prettierignore
+# together, so the gates never disagree about a path.
 ignores:
   - ".git/**"
+  - "**/build/**"
+  - "**/.vendor/**"
+  - "**/vendor/**"
+  - "**/*.hbs"
+  - "test-cases/performance/hard/lattice/*/cases/*.json"
