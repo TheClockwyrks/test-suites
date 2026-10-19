@@ -51,7 +51,7 @@ PIPELINE_ONLY = {"rust-clippy", "rust-doc", "rust-test", "shell-tests", "ci-test
 # The gates this repository's kind adds are hookless for the same reason: each
 # builds or runs a test suite. The kit's render writes their ids into this
 # string, which is empty for a kind that adds none.
-KIND_PIPELINE_ONLY = ""
+KIND_PIPELINE_ONLY = "typescript"
 PIPELINE_ONLY |= set(KIND_PIPELINE_ONLY.split())
 # And so are the ones this repository adds over its kind's: on a Rust track that
 # drives a browser, the gate holding the workspace's Playwright to the image,
@@ -79,7 +79,7 @@ MIRROR_URL = "https://github.com/TheClockwyrks/test-suites"
 MIRROR_SCRIPT = "scripts/ci/mirror.sh"
 # The feed a job authenticates npm to before its first install, or nothing for
 # a kind that builds no workspace.
-FEED_SCRIPT_REGISTRY = ""
+FEED_SCRIPT_REGISTRY = "https://pkgs.dev.azure.com/genyume/the-test-cabinet/_packaging/the-test-cabinet/npm/registry/"
 NPM_FEED_SCRIPT = "scripts/ci/npm-feed.sh"
 NPM_INSTALL = "- script: npm ci"
 STEP = re.compile(r"^          - ", re.MULTILINE)

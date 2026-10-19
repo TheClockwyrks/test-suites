@@ -24,6 +24,7 @@ accordingly.
 | Path | What it is |
 | --- | --- |
 | [`.claude/`](.claude/README.md) | The harness's settings, its gate hooks and the `coding` skill |
+| `tools/` | The npm workspace's members, under the root `package.json` |
 | [`ci/`](ci/README.md) | The gates, one file per gate, with the runner that executes them |
 | `.copier-answers.yml` | The answers this repository was rendered with and the superrepo commit its kit was last updated from; copier maintains it, and `scripts/repos/render.py --update` in the superrepo merges a kit change in from it |
 | `.test-cabinet-repo.toml` | The name, kind and description, rendered from those answers for the `dependency-edges` gate to read |

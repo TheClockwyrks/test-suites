@@ -11,6 +11,12 @@
 # ci/images/tags.yml pins, so what a gate ran inside is a fact written in the
 # diff. ci/tests/test_wiring.py holds each track to its image.
 #
+# This repository's kind carries the `typescript` gate, so its workspace may
+# name a package of the project, which installs from the project's private
+# feed. Before a job's first `npm ci`, scripts/ci/npm-feed.sh writes the job's
+# access token into the user's npm configuration as the credential npm
+# presents to the feed, so the token reaches npm through configuration alone.
+#
 # A push of a tag `v*` runs the gates too, and such a run then
 # runs the publish stage, which publishes each public package of the workspace
 # to the feed at the version its manifest carries, the tag's. Every repository
@@ -64,6 +70,10 @@ stages:
           - checkout: self
             fetchDepth: 1
             clean: true
+          - script: scripts/ci/npm-feed.sh https://pkgs.dev.azure.com/genyume/the-test-cabinet/_packaging/the-test-cabinet/npm/registry/
+            displayName: Authenticate npm to the package feed
+            env:
+              SYSTEM_ACCESSTOKEN: $(System.AccessToken)
           - script: npm ci
             displayName: Install the npm workspace
           - script: pre-commit install-hooks
@@ -145,6 +155,19 @@ stages:
               testResultsFormat: JUnit
               testResultsFiles: $(Build.SourcesDirectory)/target/gate-artifacts/ci-tests/junit.xml
               testRunTitle: ci tests
+              failTaskOnMissingResultsFile: false
+          - script: uv run --quiet --project ci gate run typescript
+            displayName: TypeScript (npm ci, build, type-check, test)
+            condition: eq(variables['checksReady'], 'true')
+            env:
+              CI_GATE_ARTIFACTS: target/gate-artifacts/typescript
+          - task: PublishTestResults@2
+            displayName: Publish the TypeScript test results
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: JUnit
+              testResultsFiles: $(Build.SourcesDirectory)/target/gate-artifacts/typescript/junit.xml
+              testRunTitle: TypeScript tests
               failTaskOnMissingResultsFile: false
 
   # A tag's run publishes here, after every gate passed: each package of the
