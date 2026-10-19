@@ -10,15 +10,17 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
+    "test": "vitest run",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint:md": "markdownlint-cli2",
     "spell": "cspell lint --no-progress --cache"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "5.0.0",
     "cspell": "10.2.2",
     "markdownlint-cli2": "0.22.1",
-    "prettier": "3.8.4"
+    "prettier": "3.8.4",
+    "vitest": "5.0.0"
   }
 }

@@ -11,10 +11,12 @@ genyume
 gitrun
 markdownlint
 nextest
+normalised
 nyxsis
 pgrep
 pyproject
 pytest
+recolour
 rustdoc
 rustup
 shellcheck
