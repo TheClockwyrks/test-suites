@@ -10,13 +10,20 @@
     }
   ],
   "dictionaries": ["project-words"],
+  "noConfigSearch": true,
+  "useGitignore": true,
   "files": ["**/*.md", "**/*.mdx", ".*/**/*.md", ".*/**/*.mdx"],
   "ignorePaths": [
     "**/.git/**",
     "**/node_modules/**",
     "**/target/**",
     "/.cspellcache",
-    "/package-lock.json"
+    "/package-lock.json",
+    "**/build/**",
+    "/**/.vendor/**",
+    "/**/vendor/**",
+    "/**/*.hbs",
+    "/test-cases/performance/hard/lattice/*/cases/*.json"
   ],
   "words": []
 }

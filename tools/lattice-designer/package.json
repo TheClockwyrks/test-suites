@@ -1,0 +1,33 @@
+{
+  "name": "@clockwyrks/lattice-designer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "A drag-and-drop factory designer for the Lattice performance case. A dev-only authoring tool, run from the test-suites checkout beside the lattice version it edits: lay out a factory by hand, watch it run through the authoritative lattice-core engine, and open and save the version's scored scenarios in place or export a design as a scenario.json.",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@clockwyrks/lattice-runtime": "1.1.1",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10",
+    "@testing-library/react": "^16",
+    "@types/node": "^25",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4",
+    "jsdom": "^26",
+    "typescript": "^6",
+    "vite": "^6",
+    "vitest": "^5"
+  }
+}

@@ -43,3 +43,9 @@ __pycache__/
 .idea/
 *.swp
 Thumbs.db
+
+# What rendering a version's reference views leaves beside it.
+/test-cases/**/reference/.rendered/
+# TypeScript's incremental build state, which a validator or reference
+# implementation's compile leaves behind.
+*.tsbuildinfo
