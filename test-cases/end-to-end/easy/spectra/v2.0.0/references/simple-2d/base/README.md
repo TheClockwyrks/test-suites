@@ -193,7 +193,7 @@ The engine, `@clockwyrks/simple-2d`, and the particle runtime,
 `@clockwyrks/particle-runtime`, are relative `file:` dependencies on the
 repository's own `packages/`, which npm installs as symlinks, so this project
 builds and tests against their current source. A run receives the same packages
-at `.vendor/engine/` and `.vendor/packages/` instead, so the imports in the sources
+under `.vendor/packages/` instead, so the imports in the sources
 are the same either way. `@clockwyrks/run-record` is declared here as well,
 even though nothing in Spectra imports it: `@clockwyrks/particle-runtime`
 re-exports a type from it, and a `file:` install of the runtime otherwise leaves

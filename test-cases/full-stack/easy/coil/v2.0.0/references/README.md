@@ -88,7 +88,7 @@ than in a run's own:
 
 | File           | The departure                                                                                                                                    |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `package.json` | `@clockwyrks/simple-2d` resolves to `../../../../../../../../packages/simple-2d` instead of the `.vendor/engine/` copy a seed vendors.           |
+| `package.json` | `@clockwyrks/simple-2d` resolves to `../../../../../../../../packages/simple-2d` instead of the `.vendor/packages/` copy a seed vendors.         |
 | `.gitignore`   | `dist/` is anchored to this project rather than left to match the vendored engine's own `dist/`, and `.vendor/` is ignored as validator scratch. |
 
 Neither is a defect of the case. The runner grades a run's own tree, no review
