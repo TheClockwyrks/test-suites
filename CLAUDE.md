@@ -26,7 +26,7 @@ accordingly.
 | [`.claude/`](.claude/README.md) | The harness's settings, its gate hooks and the `coding` skill |
 | `test-cases/`, `game-jams/`, `test-case-groups/` | The catalog: every test case, game jam and test-case group, a version per directory; a `.frozen` version never changes |
 | `tools/` | The npm workspace's members, under the root `package.json`, such as the lattice factory designer |
-| `scripts/` | The catalog's scripts: freezing a version, the checks behind its gates, and the format check |
+| `scripts/` | The catalog's scripts: freezing a version, writing its workspace lockfiles, the checks behind its gates, and the format check |
 | `history/` | How the catalog's history was extracted from the superrepo |
 | [`ci/`](ci/README.md) | The gates, one file per gate, with the runner that executes them |
 | `.copier-answers.yml` | The answers this repository was rendered with and the superrepo commit its kit was last updated from; copier maintains it, and `scripts/repos/render.py --update` in the superrepo merges a kit change in from it |
