@@ -15,8 +15,7 @@
 //   1. the directory its environment variable names (`TCAB_CONTRACTS_DIR`,
 //      `TCAB_BACKEND_DIR`), for a checkout kept anywhere else;
 //   2. its checkout in the superrepo this checkout is a submodule of, where
-//      `contracts` sits beside `test-suites` and the backend is still a directory
-//      of the superrepo's own tree;
+//      `contracts` and `microservice-backend` sit beside `test-suites`;
 //   3. otherwise a shallow, sparse clone of its public mirror's `master`, holding
 //      the named paths alone, made under `node_modules/.cache/siblings/` on every
 //      run. That is how the pipeline, which checks this repository out on its own,
@@ -43,11 +42,10 @@ export const SIBLINGS = {
     mirror: "https://github.com/TheClockwyrks/contracts",
     paths: ["crates/suites/src/prompt.rs"],
   },
-  // The backend is not extracted yet, so its mirror is the superrepo's own.
   "microservice-backend": {
     env: "TCAB_BACKEND_DIR",
-    superrepo: ".",
-    mirror: "https://github.com/TheClockwyrks/TheTestCabinet",
+    superrepo: "microservice-backend",
+    mirror: "https://github.com/TheClockwyrks/microservice-backend",
     paths: ["containers/sample-packs", "scripts/lib/audio-store.mjs"],
   },
 };
