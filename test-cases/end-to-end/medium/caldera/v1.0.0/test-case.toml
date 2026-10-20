@@ -60,11 +60,14 @@ max_runtime_hours = 6
 workspace = "workspaces/base"
 
 # Init command, run in the run container once the workspace and specs are seeded
-# and before the harness starts. Installs the workspace's dependencies and
-# downloads the Playwright Chromium build (the base image ships the OS libraries
-# Chromium links against, but not the browser binary), so the model can build and
-# verify immediately against a project-local Playwright.
-init = "npm install && npx playwright install chromium"
+# and before the harness starts. Installs the workspace's dependencies, exactly
+# as its committed `package-lock.json` pins them, and downloads the Playwright
+# Chromium build (the base image ships the OS libraries Chromium links against,
+# but not the browser binary), so the model can build and verify immediately
+# against a project-local Playwright. It is `npm ci`, not `npm install`:
+# `npm ci` refuses a lockfile that disagrees with `package.json` and never
+# rewrites it, so the run starts from the lockfile the seed commit holds.
+init = "npm ci && npx playwright install chromium"
 
 # Variants: exactly one runs per run, and its slug is recorded in the run record.
 # This version offers a single `base` variant — the standard The Hold defense.
