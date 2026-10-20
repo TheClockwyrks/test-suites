@@ -14,7 +14,7 @@
     "test": "vitest run --coverage"
   },
   "dependencies": {
-    "@clockwyrks/structured-3d": "file:./.vendor/engine/@clockwyrks/structured-3d",
+    "@clockwyrks/structured-3d": "file:./.vendor/packages/@clockwyrks/structured-3d",
     "three": "~0.185.0"
   },
   "devDependencies": {

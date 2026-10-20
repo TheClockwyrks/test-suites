@@ -65,14 +65,19 @@ type = "full-stack"
 # variant runs in the one image.
 asset_dimension = "3d"
 
-# Init command, run in the container once the workspace and specs are seeded and
-# before the harness starts. `npm install` (not `npm ci`) because seeding writes
-# baked-in `file:` dependencies into the workspace's `package.json` — the
-# `packages` runtime below and the selected engine — so the lockfile completes
-# at seed time rather than being committed
-# ahead of it; the same command downloads the Playwright Chromium build so the
-# model can look at its game in a browser without further setup.
-init = "npm install && npx playwright install chromium"
+# Init command, run in the run container once the workspace and specs are seeded
+# and before the harness starts. It installs the seeded project's dependencies,
+# exactly as the workspace's committed `package-lock.json` pins them — the
+# TypeScript toolchain the `[toolchain]` commands invoke, the headless canvas
+# the model's own vitest tests can draw through, the vendored voxel runtime the
+# engineless workspace declares, and, on an engine run, the vendored engine —
+# and downloads the Playwright Chromium build (the base image ships the OS
+# libraries Chromium links against, but not the browser binary), so the model
+# can build the game and look at it in a browser without any further setup. It
+# is `npm ci`, not `npm install`: `npm ci` refuses a lockfile that disagrees
+# with `package.json` and never rewrites it, so the run starts from the lockfile
+# the seed commit holds.
+init = "npm ci && npx playwright install chromium"
 
 # NOTE: no `assets = [...]` of pre-made art, deliberately: the model produces the
 # game's models and audio itself, during the run (`specs/assets.md`).

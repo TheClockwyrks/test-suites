@@ -14,7 +14,7 @@
     "test": "vitest run --coverage"
   },
   "dependencies": {
-    "@clockwyrks/simple-3d": "file:./.vendor/engine/@clockwyrks/simple-3d",
+    "@clockwyrks/simple-3d": "file:./.vendor/packages/@clockwyrks/simple-3d",
     "three": "~0.185.0"
   },
   "devDependencies": {
