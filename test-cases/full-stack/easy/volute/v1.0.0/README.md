@@ -81,9 +81,10 @@ insertion, a grant, or a cell spend.
 
 All three depend on `@clockwyrks/particle-runtime` at the
 `file:./.vendor/packages/@clockwyrks/particle-runtime` path the manifest's
-`packages` key requires, which is why `init` is `npm install` while
-`[build].install` stays `npm ci`. The engine workspaces additionally carry the
-engine's own `file:` dependency, written in at seed time.
+`packages` key requires, and each workspace's committed `package-lock.json`
+links it there, so `init` and `[build].install` both install with `npm ci`. The
+engine workspaces additionally declare the engine's own `file:` dependency under
+`.vendor/packages/`, where seeding vendors the engine.
 
 ## The checklist
 

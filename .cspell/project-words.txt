@@ -185,6 +185,7 @@ letterboxing
 levelclear
 levelup
 loadouts
+lockfiles
 locomotivation
 lofi
 loopable

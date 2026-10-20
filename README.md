@@ -65,6 +65,23 @@ publishes. `scripts/lib/siblings.mjs` finds each beside this checkout in the
 superrepo, or clones its public mirror when this repository is checked out on
 its own, as the pipeline does.
 
+## Workspace lockfiles
+
+Every starter workspace a version declares ships the `package-lock.json` its
+run's `npm ci` installs, linking each Test Cabinet package and engine at the
+vendored `file:` path seeding fills. `scripts/workspace-lockfiles.mjs` writes
+them out of a package store the superrepo stages
+(`node scripts/stage-tcab-packages.mjs /tmp/tcab-packages`), outside this
+repository's `.npmrc`, and `--check` names every lockfile that is missing or
+has drifted:
+
+```sh
+node scripts/workspace-lockfiles.mjs --store /tmp/tcab-packages <version-folder>...
+node scripts/workspace-lockfiles.mjs --store /tmp/tcab-packages --check <version-folder>...
+```
+
+See <https://docs.testcabinet.ai/testing/end-to-end/overview/>.
+
 ## Mirror
 
 The Test Cabinet names this repository by the relative URL `../test-suites`, so

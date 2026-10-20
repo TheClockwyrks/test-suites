@@ -74,13 +74,15 @@ max_runtime_hours = 8
 workspace = "workspaces/base"
 
 # Init command, run in the run container once the workspace and specs are seeded
-# and before the harness starts. `npm install` — NOT `npm ci` — because `packages`
-# injects the `@clockwyrks/particle-runtime` `file:` dependency this build plays
-# its produced particle systems with, so the lockfile is completed at seed time;
-# the same command downloads the Playwright Chromium build (the base image ships
-# the OS libraries Chromium links against, but not the browser binary), so the
-# model can build and verify immediately against a project-local Playwright.
-init = "npm install && npx playwright install chromium"
+# and before the harness starts. It installs the workspace's dependencies — the
+# vendored particle runtime among them — exactly as its committed
+# `package-lock.json` pins them, and downloads the Playwright Chromium build
+# (the base image ships the OS libraries Chromium links against, but not the
+# browser binary), so the model can build and verify immediately against a
+# project-local Playwright. It is `npm ci`, not `npm install`: `npm ci` refuses
+# a lockfile that disagrees with `package.json` and never rewrites it, so the
+# run starts from the lockfile the seed commit holds.
+init = "npm ci && npx playwright install chromium"
 
 # NOTE: this case declares NO `assets = [...]` of pre-made game art. That is the
 # whole point of a full-stack case: the model PRODUCES the game's art, effects, and

@@ -31,8 +31,9 @@ contract.
 
 This case declares no `assets = [...]` of pre-made art. It does declare
 `packages = ["@clockwyrks/particle-runtime"]`, the runtime the build plays its
-produced particle systems with, and its `init` uses `npm install` so the
-injected `file:` dependency resolves.
+produced particle systems with, which the workspace declares at
+`file:./.vendor/packages/@clockwyrks/particle-runtime` and its committed
+`package-lock.json` links; `init` installs with `npm ci`.
 
 ## Why this case
 

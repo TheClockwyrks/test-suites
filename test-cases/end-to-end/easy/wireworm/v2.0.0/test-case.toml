@@ -69,14 +69,17 @@ prompt = "prompt.hbs"
 max_runtime_hours = 4
 
 # Init command, run in the run container once the workspace and specs are seeded
-# and before the harness starts. It installs the seeded project's dependencies —
-# the TypeScript toolchain the `[toolchain]` commands invoke, the headless canvas
+# and before the harness starts. It installs the seeded project's dependencies,
+# exactly as the workspace's committed `package-lock.json` pins them — the
+# TypeScript toolchain the `[toolchain]` commands invoke, the headless canvas
 # the model's own vitest tests can draw through, and, on an engine run, the
 # vendored engine — and downloads the Playwright Chromium build (the base image
 # ships the OS libraries Chromium links against, but not the browser binary), so
 # the model can build the game and look at it in a browser without any further
-# setup.
-init = "npm install && npx playwright install chromium"
+# setup. It is `npm ci`, not `npm install`: `npm ci` refuses a lockfile that
+# disagrees with `package.json` and never rewrites it, so the run starts from
+# the lockfile the seed commit holds.
+init = "npm ci && npx playwright install chromium"
 
 # The seeded sprite art, each entry kept at its path relative to this version
 # folder when seeded, so `assets/node/` lands at `assets/node/` in the run. Every

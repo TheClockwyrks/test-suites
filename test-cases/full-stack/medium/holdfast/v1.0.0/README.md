@@ -31,8 +31,9 @@ one of them. There is no `ui`, `paint`, `texture`, voxel, or mesh tool, so all
 HUD and dashboard chrome is drawn in code. The full production contract is
 `specs/assets.md`. Accordingly this case declares no `assets = [...]` of
 pre-made art. It does declare `packages = ["@clockwyrks/particle-runtime"]`,
-the runtime the build plays its produced particle systems with, and its `init`
-uses `npm install`, not `npm ci`, so the injected `file:` dependency resolves.
+the runtime the build plays its produced particle systems with, which the
+workspace declares at `file:./.vendor/packages/@clockwyrks/particle-runtime`
+and its committed `package-lock.json` links; `init` installs with `npm ci`.
 
 ## Scope and scoring
 

@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@clockwyrks/particle-runtime": "file:./.vendor/packages/@clockwyrks/particle-runtime",
-    "@clockwyrks/structured-2d": "file:./.vendor/engine/@clockwyrks/structured-2d"
+    "@clockwyrks/structured-2d": "file:./.vendor/packages/@clockwyrks/structured-2d"
   },
   "devDependencies": {
     "@eslint/js": "^10",
