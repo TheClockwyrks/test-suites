@@ -177,7 +177,7 @@ npm ci
 The engine, `@clockwyrks/simple-2d`, is a relative `file:` dependency on the
 repository's `packages/simple-2d`, which npm installs as a symlink, so this
 project builds and tests against the engine's current source. A run receives the
-same package at `.vendor/engine/@clockwyrks/simple-2d/` instead, so the import in
+same package at `.vendor/packages/@clockwyrks/simple-2d/` instead, so the import in
 the sources is the same either way.
 
 ## Run in development
