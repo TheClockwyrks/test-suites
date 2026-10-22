@@ -2,7 +2,7 @@
 # kit was last rendered or updated from. Copier maintains it through the
 # superrepo's scripts/repos/render.py; a change made here is overwritten by
 # the next update.
-_commit: v0.6.3-5088-g492f63526
+_commit: v0.6.3-5468-g39f826731
 _src_path: ..
 description: The authored test suites The Test Cabinet draws its test cases from.
 kind: content
